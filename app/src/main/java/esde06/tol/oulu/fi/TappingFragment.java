@@ -10,9 +10,19 @@ import android.widget.ImageView;
 import android.view.MotionEvent;
 import android.widget.TextView;
 
-public class TappingFragment extends Fragment implements View.OnTouchListener {
+import java.io.IOException;
+import java.util.Observable;
+import java.util.Observer;
+
+import esde06.tol.oulu.fi.cwprotocol.CWPMessaging;
+import esde06.tol.oulu.fi.model.CWPModel;
+import esde06.tol.oulu.fi.model.CWPModel.CWPState;
+import esde06.tol.oulu.fi.CWPProvider;
+
+public class TappingFragment extends Fragment implements View.OnTouchListener, Observer {
 
     private ImageView lineStatusImage;
+    private CWPMessaging messaging;
 
     public TappingFragment() {
         // Required empty public constructor
@@ -38,23 +48,34 @@ public class TappingFragment extends Fragment implements View.OnTouchListener {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        CWPProvider provider = (CWPProvider) getActivity();
+        messaging = provider.getMessaging();
+        messaging.addObserver(this);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
+        messaging.deleteObserver(this);
+        messaging = null;
     }
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
 
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-             changeLineStatusIcon(true);
-             changeUserLineState(true);
+             try {
+                 messaging.lineUp();
+             } catch (IOException e) {
+
+             }
              return true;
         } else if (event.getAction() == MotionEvent.ACTION_CANCEL || event.getAction() == MotionEvent.ACTION_UP ) {
-            changeLineStatusIcon(false);
-            changeUserLineState(false);
+            try {
+                messaging.lineDown();
+            } catch (IOException e) {
+
+            }
             return true;
         }
         return false;
@@ -75,5 +96,12 @@ public class TappingFragment extends Fragment implements View.OnTouchListener {
         } else {
             lineStatusImage.setImageResource(R.mipmap.down);
         }
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        CWPState state = (CWPState) arg;
+        changeLineStatusIcon(state == CWPState.LineUp);
+        changeUserLineState(state == CWPState.LineUp);
     }
 }
