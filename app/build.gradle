@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "esdeNN.esde006.tol.oulu.fi"
+        applicationId "esde06.tol.oulu.fi"
         minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
