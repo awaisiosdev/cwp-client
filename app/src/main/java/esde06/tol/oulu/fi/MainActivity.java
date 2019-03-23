@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import esde06.tol.oulu.fi.cwprotocol.CWPControl;
 import esde06.tol.oulu.fi.cwprotocol.CWPMessaging;
 import esde06.tol.oulu.fi.model.CWPModel;
 import esde06.tol.oulu.fi.CWPProvider;
@@ -58,6 +59,9 @@ public class MainActivity extends AppCompatActivity implements CWPProvider {
     }
 
     public CWPMessaging getMessaging() {
+        return cwpModel;
+    }
+    public CWPControl getControl() {
         return cwpModel;
     }
 

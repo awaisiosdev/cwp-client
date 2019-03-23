@@ -39,8 +39,7 @@ public class TappingFragment extends Fragment implements View.OnTouchListener, O
         // Inflate the layout for this fragment
         View fragmentView = inflater.inflate(R.layout.fragment_tapping, container, false);
         lineStatusImage = (ImageView) fragmentView.findViewById(R.id.lineStatusIcon);
-
-        fragmentView.setOnTouchListener(this);
+        lineStatusImage.setOnTouchListener(this);
         return fragmentView;
     }
 
@@ -90,18 +89,28 @@ public class TappingFragment extends Fragment implements View.OnTouchListener, O
         }
     }
 
-    private void changeLineStatusIcon(boolean isUp) {
-        if (isUp){
-            lineStatusImage.setImageResource(R.mipmap.up);
-        } else {
-            lineStatusImage.setImageResource(R.mipmap.down);
+    private void changeLineStatusIcon(CWPState state) {
+        switch(state){
+            case LineDown:
+                lineStatusImage.setImageResource(R.mipmap.down);
+                break;
+            case Connected:
+                lineStatusImage.setImageResource(R.mipmap.down);
+                break;
+            case LineUp:
+                lineStatusImage.setImageResource(R.mipmap.up);
+                break;
+            case Disconnected:
+                lineStatusImage.setImageResource(R.mipmap.offline);
+                break;
+
         }
     }
 
     @Override
     public void update(Observable o, Object arg) {
         CWPState state = (CWPState) arg;
-        changeLineStatusIcon(state == CWPState.LineUp);
+        changeLineStatusIcon(state);
         changeUserLineState(state == CWPState.LineUp);
     }
 }
