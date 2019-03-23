@@ -1,0 +1,20 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+
+    <EditTextPreference
+        android:defaultValue="@string/pref_default_server_address"
+        android:inputType="textUri"
+        android:key="server_address"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:title="@string/pref_server_address_title" />
+
+    <EditTextPreference
+        android:defaultValue="@string/pref_default_frequency"
+        android:inputType="number"
+        android:key="connection_frequency"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_connection_frequency_title" />
+
+</PreferenceScreen>

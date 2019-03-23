@@ -2,4 +2,16 @@
     <string name="app_name">CWP Client 06</string>
     <string name="Connected">Connected</string>
     <string name="Disconnected">Disconnected</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">General</string>
+    <string name="pref_server_address_title">Server Address</string>
+    <string name="pref_default_server_address">0.0.0.0</string>
+    <string name="pref_connection_frequency_title">Frequency</string>
+    <string name="pref_default_frequency">-1</string>
+
+    <string name="pref_key_server_address">server_address</string>
+    <string name="pref_key_connection_frequency">connection_frequency</string>
+
 </resources>
