@@ -13,11 +13,8 @@ import android.widget.TextView;
 import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
-
 import esde06.tol.oulu.fi.cwprotocol.CWPMessaging;
-import esde06.tol.oulu.fi.model.CWPModel;
-import esde06.tol.oulu.fi.model.CWPModel.CWPState;
-import esde06.tol.oulu.fi.CWPProvider;
+import esde06.tol.oulu.fi.cwprotocol.CWProtocolListener.CWPEvent;
 
 public class TappingFragment extends Fragment implements View.OnTouchListener, Observer {
 
@@ -89,18 +86,18 @@ public class TappingFragment extends Fragment implements View.OnTouchListener, O
         }
     }
 
-    private void changeLineStatusIcon(CWPState state) {
-        switch(state){
-            case LineDown:
+    private void changeLineStatusIcon(CWPEvent event) {
+        switch(event){
+            case ELineDown:
                 lineStatusImage.setImageResource(R.mipmap.down);
                 break;
-            case Connected:
-                lineStatusImage.setImageResource(R.mipmap.down);
-                break;
-            case LineUp:
+            case ELineUp:
                 lineStatusImage.setImageResource(R.mipmap.up);
                 break;
-            case Disconnected:
+            case EConnected:
+                lineStatusImage.setImageResource(R.mipmap.down);
+                break;
+            case EDisconnected:
                 lineStatusImage.setImageResource(R.mipmap.offline);
                 break;
 
@@ -109,8 +106,8 @@ public class TappingFragment extends Fragment implements View.OnTouchListener, O
 
     @Override
     public void update(Observable o, Object arg) {
-        CWPState state = (CWPState) arg;
-        changeLineStatusIcon(state);
-        changeUserLineState(state == CWPState.LineUp);
+        CWPEvent event = (CWPEvent) arg;
+        changeLineStatusIcon(event);
+        changeUserLineState(event == CWPEvent.ELineUp);
     }
 }

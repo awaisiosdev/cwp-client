@@ -5,60 +5,58 @@ import java.util.Observable;
 
 import esde06.tol.oulu.fi.cwprotocol.CWPControl;
 import esde06.tol.oulu.fi.cwprotocol.CWPMessaging;
+import esde06.tol.oulu.fi.cwprotocol.CWProtocolImplementation;
+import esde06.tol.oulu.fi.cwprotocol.CWProtocolListener;
 
-public class CWPModel extends Observable implements CWPMessaging, CWPControl {
-    public enum CWPState { Disconnected, Connected, LineUp, LineDown };
-    private volatile CWPState currentState = CWPState.Disconnected;
-    int frequency = CWPControl.DEFAULT_FREQUENCY;
+public class CWPModel extends Observable implements CWPMessaging, CWPControl, CWProtocolListener  {
+    CWProtocolImplementation protocol = new CWProtocolImplementation(this);
 
     // CWPMessaging Interface Implementation
 
     public void lineUp () throws IOException {
-        currentState = CWPState.LineUp;
-        setChanged();
-        notifyObservers(currentState);
+        protocol.lineUp();
     }
 
     public void lineDown () throws IOException {
-        currentState = CWPState.LineDown;
-        setChanged();
-        notifyObservers(currentState);
+        protocol.lineDown();
     }
 
     public boolean lineIsUp () {
-        return currentState == CWPState.LineUp;
+        return protocol.lineIsUp();
     }
 
     public boolean serverSetLineUp(){
-        return false;
+        return protocol.serverSetLineUp();
     }
 
     // CWPControl Interface Implementation
 
     public void connect(String serverAddr, int serverPort, int frequency) throws IOException {
-        currentState = CWPState.Connected;
-        setChanged();
-        notifyObservers(currentState);
+        protocol.connect(serverAddr, serverPort, frequency);
     }
 
     public void disconnect() throws IOException {
-        currentState = CWPState.Disconnected;
-        setChanged();
-        notifyObservers(currentState);
+        protocol.disconnect();
     }
 
     public boolean isConnected () {
-         return currentState == CWPState.Connected;
+         return protocol.isConnected();
     }
 
     public void setFrequency(int frequency) throws IOException {
-
+        protocol.setFrequency(frequency);
     }
 
     @Override
     public int frequency() {
-        return 0;
+        return protocol.frequency();
     }
+
+    public void onEvent(CWPEvent event, int param) {
+        setChanged();
+        notifyObservers(event);
+    }
+
 
 
 }

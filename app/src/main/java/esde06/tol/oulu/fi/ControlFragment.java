@@ -1,7 +1,6 @@
 package esde06.tol.oulu.fi;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,11 +14,8 @@ import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 
-import esde06.tol.oulu.fi.R;
-
 import esde06.tol.oulu.fi.cwprotocol.CWPControl;
-import esde06.tol.oulu.fi.model.CWPModel;
-import esde06.tol.oulu.fi.model.CWPModel.CWPState;
+import esde06.tol.oulu.fi.cwprotocol.CWProtocolListener.CWPEvent;
 
 public class ControlFragment extends Fragment implements View.OnTouchListener, Observer {
 
@@ -82,12 +78,12 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, O
 
     @Override
     public void update(Observable o, Object arg) {
-        CWPState state = (CWPState) arg;
-        if (state == CWPState.Connected){
+        CWPEvent event = (CWPEvent) arg;
+        if (event == CWPEvent.EConnected){
             Toast.makeText(getActivity().getApplicationContext(),
                     getString(R.string.Connected),
                     Toast.LENGTH_SHORT).show();
-        } else if (state == CWPState.Disconnected) {
+        } else if (event == CWPEvent.EDisconnected) {
             Toast.makeText(getActivity().getApplicationContext(),
                     getString(R.string.Disconnected),
                     Toast.LENGTH_SHORT).show();
