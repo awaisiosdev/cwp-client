@@ -114,8 +114,8 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
         private static final String TAG = "CWPReader";
 
         // Used before networking for timing cw signals
-        private Handler handler = new Handler();
-        private Runnable callback = null;
+        private Timer readerTimer;
+        private TimerTask readerTask;
 
 
         CWPConnectionReader(Runnable processor) {
@@ -128,32 +128,31 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
         }
 
         void stopReading() throws InterruptedException {
-            handler.removeCallbacks(callback);
+            readerTimer.cancel();
             running = false;
-            callback = null;
+            readerTimer = null;
+            readerTask = null;
         }
 
         private void doInitialize() throws InterruptedException {
+           readerTimer = new Timer();
+           readerTask = new TimerTask() {
+               @Override
+               public void run() {
+                   Log.d(TAG, "Timer event Fire");
+                   System.out.println("Task performed on " + new Date());
+                   try {
+                       if (currentState == CWPState.LineUp) {
+                           changeProtocolState(CWPState.LineDown, 0);
+                       } else if (currentState == CWPState.LineDown) {
+                           changeProtocolState(CWPState.LineUp, 0);
+                       }
+                   } catch (InterruptedException e) {
 
-            callback = new Runnable() {
-                @Override
-                public void run() {
-                    Log.d(TAG, "Timer event Fire");
-                    System.out.println("Task performed on " + new Date());
-                    try {
-                        if (currentState == CWPState.LineUp) {
-                            changeProtocolState(CWPState.LineDown, 0);
-                        } else if (currentState == CWPState.LineDown) {
-                            changeProtocolState(CWPState.LineUp, 0);
-                        }
-                    } catch (InterruptedException e){
-
-                    }
-                    handler.postDelayed(this, 20000);
-                }
-            };
-
-            handler.postDelayed(callback, 2000);
+                   }
+               }
+           };
+           readerTimer.scheduleAtFixedRate(readerTask, 2000, 3000);
         }
 
 
