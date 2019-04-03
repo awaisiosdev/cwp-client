@@ -3,6 +3,7 @@ package esde06.tol.oulu.fi;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,6 +20,7 @@ import esde06.tol.oulu.fi.cwprotocol.CWProtocolListener.CWPEvent;
 
 public class ControlFragment extends Fragment implements View.OnTouchListener, Observer {
 
+    private final static String TAG = "ControlFragment";
     CWPControl control;
     ToggleButton connectionSwitch;
 
@@ -47,6 +49,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, O
         CWPProvider provider = (CWPProvider) getActivity();
         control = provider.getControl();
         control.addObserver(this);
+        Log.d(TAG, "Started observing protocol events.");
     }
 
     @Override
@@ -54,6 +57,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, O
         super.onDetach();
         control.deleteObserver(this);
         control = null;
+        Log.d(TAG, "Stopped observing protocol events");
     }
 
     @Override
@@ -63,8 +67,10 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, O
             try {
 
                 if (!connectionSwitch.isChecked()) {
+                    Log.d(TAG, "Connect to protocol server request initiated.");
                     control.connect("0.0.0.0", 80, -1);
                 } else {
+                    Log.d(TAG, "Disconnect to protocol server request initiated.");
                     control.disconnect();
                 }
 
@@ -79,6 +85,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, O
     @Override
     public void update(Observable o, Object arg) {
         CWPEvent event = (CWPEvent) arg;
+        Log.d(TAG, "Received protocol event : " + event.name());
         if (event == CWPEvent.EConnected){
             Toast.makeText(getActivity().getApplicationContext(),
                     getString(R.string.Connected),

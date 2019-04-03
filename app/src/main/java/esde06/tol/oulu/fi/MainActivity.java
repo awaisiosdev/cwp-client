@@ -20,6 +20,7 @@ import esde06.tol.oulu.fi.CWPProvider;
 
 public class MainActivity extends AppCompatActivity implements CWPProvider {
 
+    private final static String TAG = "MainActivity";
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
     private CWPModel cwpModel;
@@ -79,8 +80,10 @@ public class MainActivity extends AppCompatActivity implements CWPProvider {
         public Fragment getItem(int position) {
 
             if (position == 0){
+                Log.d(TAG, "Tapping fragment created.");
                 return new TappingFragment();
             } else if (position == 1){
+                Log.d(TAG, "Control Fragment created.");
                 return new ControlFragment();
             }
 
@@ -91,8 +94,10 @@ public class MainActivity extends AppCompatActivity implements CWPProvider {
         public String getPageTitle(int position) {
 
             if (position == 0){
+                Log.d(TAG, "Tapping fragment title set.");
                 return "Tapping";
             } else if (position == 1){
+                Log.d(TAG, "Control fragment title set.");
                 return "Control";
             }
 
@@ -100,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements CWPProvider {
         }
         @Override
         public int getCount() {
-            // Show 1 total pages.
+            Log.d(TAG, "2 fragments");
             return 2;
         }
     }

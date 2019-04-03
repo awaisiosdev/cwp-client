@@ -3,6 +3,7 @@ package esde06.tol.oulu.fi;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import esde06.tol.oulu.fi.cwprotocol.CWProtocolListener.CWPEvent;
 
 public class TappingFragment extends Fragment implements View.OnTouchListener, Observer {
 
+    private static final String TAG = "TappingFragment";
     private ImageView lineStatusImage;
     private CWPMessaging messaging;
 
@@ -47,6 +49,7 @@ public class TappingFragment extends Fragment implements View.OnTouchListener, O
         CWPProvider provider = (CWPProvider) getActivity();
         messaging = provider.getMessaging();
         messaging.addObserver(this);
+        Log.d(TAG, "Started observing protocol events." );
     }
 
     @Override
@@ -54,6 +57,7 @@ public class TappingFragment extends Fragment implements View.OnTouchListener, O
         super.onDetach();
         messaging.deleteObserver(this);
         messaging = null;
+        Log.d(TAG, "Stopped observing protocol events.");
     }
 
     @Override
@@ -61,6 +65,7 @@ public class TappingFragment extends Fragment implements View.OnTouchListener, O
 
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
              try {
+                 Log.d(TAG, "Line Up signal send by user.");
                  messaging.lineUp();
              } catch (IOException e) {
 
@@ -68,6 +73,7 @@ public class TappingFragment extends Fragment implements View.OnTouchListener, O
              return true;
         } else if (event.getAction() == MotionEvent.ACTION_CANCEL || event.getAction() == MotionEvent.ACTION_UP ) {
             try {
+                Log.d(TAG, "Line Down signal send by user.");
                 messaging.lineDown();
             } catch (IOException e) {
 
@@ -108,6 +114,7 @@ public class TappingFragment extends Fragment implements View.OnTouchListener, O
     public void update(Observable o, Object arg) {
         CWPEvent event = (CWPEvent) arg;
         changeLineStatusIcon(event);
+        Log.d(TAG, "Received protocol event: " + event.name());
         changeUserLineState(event == CWPEvent.ELineUp);
     }
 }

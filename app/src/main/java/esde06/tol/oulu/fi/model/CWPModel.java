@@ -1,5 +1,7 @@
 package esde06.tol.oulu.fi.model;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.util.Observable;
 
@@ -9,15 +11,18 @@ import esde06.tol.oulu.fi.cwprotocol.CWProtocolImplementation;
 import esde06.tol.oulu.fi.cwprotocol.CWProtocolListener;
 
 public class CWPModel extends Observable implements CWPMessaging, CWPControl, CWProtocolListener  {
-    CWProtocolImplementation protocol = new CWProtocolImplementation(this);
 
+    private final static String TAG = "CWPModel";
+    CWProtocolImplementation protocol = new CWProtocolImplementation(this);
     // CWPMessaging Interface Implementation
 
     public void lineUp () throws IOException {
+        Log.d(TAG, "Pass line Up request");
         protocol.lineUp();
     }
 
     public void lineDown () throws IOException {
+        Log.d(TAG, "Pass line Down request");
         protocol.lineDown();
     }
 
@@ -32,10 +37,12 @@ public class CWPModel extends Observable implements CWPMessaging, CWPControl, CW
     // CWPControl Interface Implementation
 
     public void connect(String serverAddr, int serverPort, int frequency) throws IOException {
+        Log.d(TAG, "Pass connect to server request.");
         protocol.connect(serverAddr, serverPort, frequency);
     }
 
     public void disconnect() throws IOException {
+        Log.d(TAG, "Pass disconnect to server request.");
         protocol.disconnect();
     }
 
@@ -44,6 +51,7 @@ public class CWPModel extends Observable implements CWPMessaging, CWPControl, CW
     }
 
     public void setFrequency(int frequency) throws IOException {
+        Log.d(TAG, "Set Frequency to : " + frequency);
         protocol.setFrequency(frequency);
     }
 
@@ -53,6 +61,7 @@ public class CWPModel extends Observable implements CWPMessaging, CWPControl, CW
     }
 
     public void onEvent(CWPEvent event, int param) {
+        Log.d(TAG, "Event received from protocol implementation. Notifying observers.");
         setChanged();
         notifyObservers(event);
     }
