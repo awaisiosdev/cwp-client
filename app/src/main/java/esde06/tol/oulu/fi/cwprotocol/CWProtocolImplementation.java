@@ -80,7 +80,7 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
     }
 
     public boolean isConnected() {
-        return currentState == CWPState.Connected;
+        return currentState != CWPState.Disconnected;
     }
 
     public boolean lineIsUp() {
@@ -162,6 +162,7 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
             running = false;
             readerTimer = null;
             readerTask = null;
+            changeProtocolState(CWPState.Disconnected, 0);
         }
 
         private void doInitialize() throws InterruptedException {

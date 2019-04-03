@@ -63,6 +63,10 @@ public class TappingFragment extends Fragment implements View.OnTouchListener, O
     @Override
     public boolean onTouch(View v, MotionEvent event) {
 
+        if (messaging.isConnected() == false){
+            return false;
+        }
+
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
              try {
                  Log.d(TAG, "Line Up signal send by user.");
