@@ -67,6 +67,7 @@ public class TappingFragment extends Fragment implements View.OnTouchListener, O
              try {
                  Log.d(TAG, "Line Up signal send by user.");
                  messaging.lineUp();
+                 changeLineState(true, R.id.userLineState);
              } catch (IOException e) {
 
              }
@@ -75,6 +76,7 @@ public class TappingFragment extends Fragment implements View.OnTouchListener, O
             try {
                 Log.d(TAG, "Line Down signal send by user.");
                 messaging.lineDown();
+                changeLineState(false, R.id.userLineState);
             } catch (IOException e) {
 
             }
@@ -83,16 +85,16 @@ public class TappingFragment extends Fragment implements View.OnTouchListener, O
         return false;
     }
 
-    private void changeUserLineState(boolean isLineUp){
-        TextView userLineState = this.getView().findViewById(R.id.userLineState);
+    private void changeLineState(boolean isLineUp, Integer id){
+        TextView lineState = this.getView().findViewById(id);
         if (isLineUp) {
-            userLineState.setText("●");
+           lineState.setText("●");
         } else {
-            userLineState.setText("○");
+            lineState.setText("○");
         }
     }
 
-    private void changeLineStatusIcon(CWPEvent event) {
+    private void changeLineStatus(CWPEvent event) {
         switch(event){
             case ELineDown:
                 lineStatusImage.setImageResource(R.mipmap.down);
@@ -106,15 +108,20 @@ public class TappingFragment extends Fragment implements View.OnTouchListener, O
             case EDisconnected:
                 lineStatusImage.setImageResource(R.mipmap.offline);
                 break;
-
+            case EChangedFrequency:
+                break;
+            case EServerStateChange:
+                break;
+        }
+        if (event == CWPEvent.ELineDown || event == CWPEvent.ELineUp || event == CWPEvent.EServerStateChange){
+            changeLineState(messaging.serverSetLineUp(), R.id.serverLineState);
         }
     }
 
     @Override
     public void update(Observable o, Object arg) {
         CWPEvent event = (CWPEvent) arg;
-        changeLineStatusIcon(event);
+        changeLineStatus(event);
         Log.d(TAG, "Received protocol event: " + event.name());
-        changeUserLineState(event == CWPEvent.ELineUp);
     }
 }
