@@ -170,6 +170,7 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
         private InputStream nis = null; //Network Input Stream
         private int bytesToRead = 4;
         private int bytesRead = 0;
+        private int reservedValue = -2147483648;
 
         CWPConnectionReader(Runnable processor) {
             myProcessor = processor;
@@ -184,12 +185,18 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
         void stopReading() throws InterruptedException, IOException {
             Log.d(TAG, "Reading Stopped");
             running = false;
-            cwpSocket.close();
-            nis.close();
-            nos.close();
-            cwpSocket = null;
-            nis = null;
-            nos = null;
+            if (cwpSocket != null){
+                cwpSocket.close();
+                cwpSocket = null;
+            }
+            if (nis != null){
+                nis.close();
+                nis = null;
+            }
+            if (nos != null){
+                nos.close();
+                nos = null;
+            }
             changeProtocolState(CWPState.Disconnected, 0);
         }
 
@@ -203,16 +210,65 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
         }
 
         private int readLoop(byte [] bytes, int bytesToRead) throws IOException {
-            return 0;
+            int readNow = nis.read(bytes, bytesRead, bytesToRead - bytesRead);
+            if (readNow == -1) {
+                throw new IOException("Read -1 from stream");
+            }
+            return readNow;
+        }
+        // Get the buffer value by setting position to 0, and clear it after reading value.
+        private int readValueAndClear(ByteBuffer buffer) {
+            Log.d(TAG, "Bytes read cycle completed.");
+            buffer.position(0);
+            int value = buffer.getInt();
+            Log.d(TAG, "Received Value: " + value);
+            buffer.clear();
+            return value;
         }
 
+        // Start new read cycle
+        private void startNewReadCycle(int bytesToRead){
+            this.bytesToRead = bytesToRead;
+            this.bytesRead = 0;
+            Log.d(TAG, "Starting new read cycle for bytes: " + bytesToRead);
+        }
 
         @Override
         public void run() {
             try {
                 doInitialize();
-                while(running) {
-                    
+                ByteBuffer buffer = ByteBuffer.allocate(100);
+                while (running) {
+                    bytesRead = bytesRead + readLoop(buffer.array(), this.bytesToRead);
+                    Log.d(TAG, "Bytes Read: " + bytesRead + " , Bytes To Read: " + this.bytesToRead);
+                    if(bytesRead != this.bytesToRead){
+                        continue;
+                    }
+
+                    if (this.bytesRead == 2){
+                        int value = readValueAndClear(buffer);
+                        Log.d(TAG, "Received Line Down Signal");
+                        changeProtocolState(CWPState.LineDown, value);
+                        startNewReadCycle(4);
+                        continue;
+                    }
+
+                    if (this.bytesRead == 4){
+                        int value = readValueAndClear(buffer);
+                        if (value > 0){
+                            Log.d(TAG, "Received Line Up Signal");
+                            changeProtocolState(CWPState.LineUp, value);
+                            startNewReadCycle(2);
+                        } else if (value < 0){
+                            if (value != reservedValue) {
+                                Log.d(TAG, "Received Frequency Confirmation signal");
+                                changeProtocolState(CWPState.LineDown, value);
+                            } else {
+                                Log.d(TAG, "Ignoring reserved value :" + value);
+                            }
+                            startNewReadCycle(4);
+                        }
+                    }
                 }
             } catch (InterruptedException e) {
 
