@@ -1,7 +1,9 @@
 package esde06.tol.oulu.fi;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ToggleButton;
 import android.widget.Toast;
+import android.preference.PreferenceManager;
 
 import java.io.IOException;
 import java.util.Observable;
@@ -18,14 +21,18 @@ import java.util.Observer;
 import esde06.tol.oulu.fi.cwprotocol.CWPControl;
 import esde06.tol.oulu.fi.cwprotocol.CWProtocolListener.CWPEvent;
 
-public class ControlFragment extends Fragment implements View.OnTouchListener, Observer {
+public class ControlFragment extends Fragment implements View.OnTouchListener, Observer, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private final static String TAG = "ControlFragment";
     CWPControl control;
     ToggleButton connectionSwitch;
+    SharedPreferences preferences;
+    private String serverAddressKey;
+    private String serverPortKey;
+    private String connectionFrequencyKey;
+
 
     public ControlFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -40,6 +47,13 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, O
         View fragmentLayout = inflater.inflate(R.layout.fragment_control, container, false);
         connectionSwitch = fragmentLayout.findViewById(R.id.connectionSwitch);
         connectionSwitch.setOnTouchListener(this);
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(this.getContext());
+        preferences.registerOnSharedPreferenceChangeListener(this);
+
+        serverAddressKey = getString(R.string.pref_key_server_address);
+        serverPortKey = getString(R.string.pref_key_server_port);
+        connectionFrequencyKey = getString(R.string.pref_key_connection_frequency);
         return fragmentLayout;
     }
 
@@ -63,12 +77,18 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, O
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         if (v instanceof ToggleButton){
-
             try {
 
                 if (!connectionSwitch.isChecked()) {
+
+                    String serverAddress = preferences.getString(serverAddressKey, "0.0.0.0");
+                    String serverPort = preferences.getString(serverPortKey, "20000");
+                    String frequency = preferences.getString(connectionFrequencyKey, "-1");
+
                     Log.d(TAG, "Connect to protocol server request initiated.");
-                    control.connect("0.0.0.0", 80, -1);
+                    Log.d(TAG, "Connecting to " + serverAddress + ":" + serverPort + " at frequency: " + frequency);
+
+                    control.connect(serverAddress, Integer.parseInt(serverPort), Integer.parseInt(frequency));
                 } else {
                     Log.d(TAG, "Disconnect to protocol server request initiated.");
                     control.disconnect();
@@ -95,5 +115,10 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, O
                     getString(R.string.Disconnected),
                     Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        Log.d(TAG, "Preference changed - " + key);
     }
 }

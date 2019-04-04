@@ -1,6 +1,7 @@
 package esde06.tol.oulu.fi;
 
 import android.content.Intent;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -41,8 +42,8 @@ public class MainActivity extends AppCompatActivity implements CWPProvider {
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         cwpModel = new CWPModel();
+        PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

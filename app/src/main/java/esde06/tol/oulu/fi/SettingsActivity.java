@@ -129,8 +129,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_general);
-            bindPreferenceSummaryToValue(findPreference("server_address"));
-            bindPreferenceSummaryToValue(findPreference("connection_frequency"));
+            bindPreferenceSummaryToValue(findPreference( getString(R.string.pref_key_server_address)));
+            bindPreferenceSummaryToValue(findPreference( getString(R.string.pref_key_server_port)));
+            bindPreferenceSummaryToValue(findPreference( getString(R.string.pref_key_connection_frequency)));
             setHasOptionsMenu(true);
         }
 

@@ -4,14 +4,14 @@
     <string name="Disconnected">Disconnected</string>
     <string name="title_activity_settings">Settings</string>
 
-    <!-- Example General settings -->
-    <string name="pref_header_general">General</string>
+    <!-- Connection settings -->
+    <string name="pref_header_general">Connection</string>
     <string name="pref_server_address_title">Server Address</string>
-    <string name="pref_default_server_address">0.0.0.0</string>
+    <string name="pref_server_port_title">Server Port</string>
     <string name="pref_connection_frequency_title">Frequency</string>
-    <string name="pref_default_frequency">-1</string>
 
     <string name="pref_key_server_address">server_address</string>
     <string name="pref_key_connection_frequency">connection_frequency</string>
+    <string name="pref_key_server_port">server_port</string>
 
 </resources>

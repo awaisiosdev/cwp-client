@@ -29,10 +29,11 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
     private static final int BUFFER_LENGTH = 64;
     private OutputStream nos = null; //Network Output Stream
     private ByteBuffer outBuffer = null;
-    private String serverAddr = "54.37.19.172";  // CWP Server running on personal machine.
+    private String serverAddr = null;
+    private int serverPort = -1;
     private int messageValue;
 
-    private int serverPort = 20000;
+
     private int currentFrequency = CWPControl.DEFAULT_FREQUENCY;
 
     private Handler receiveHandler = new Handler();
@@ -73,6 +74,9 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
 
     public void connect(String serverAddr, int serverPort, int frequency) throws IOException {
         Log.d(TAG, "Connect to CWP Server.");
+        this.serverAddr = serverAddr;
+        this.serverPort = serverPort;
+        this.currentFrequency = frequency;
         reader = new CWPConnectionReader(this);
         reader.startReading();
         Log.d(TAG, "Started Reading incoming messages.");
@@ -164,8 +168,8 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
         private Runnable myProcessor;
         private Socket cwpSocket = null;
         private InputStream nis = null; //Network Input Stream
-        private Integer bytesToRead = 4;
-        private Integer bytesRead = 0;
+        private int bytesToRead = 4;
+        private int bytesRead = 0;
 
         CWPConnectionReader(Runnable processor) {
             myProcessor = processor;
