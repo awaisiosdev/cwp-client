@@ -9,7 +9,7 @@ public interface CWPControl {
     public void addObserver(Observer observer);
     public void deleteObserver(Observer observer);
     // Connection management
-    public void connect(String serverAddr, int serverPort, int frequency) throws IOException;
+    public void connect(String serverAddr, int serverPort, int frequency);
     public void disconnect()  throws IOException;
     public boolean isConnected();
     // Frequency management

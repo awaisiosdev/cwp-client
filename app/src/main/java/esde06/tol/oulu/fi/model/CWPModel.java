@@ -36,7 +36,7 @@ public class CWPModel extends Observable implements CWPMessaging, CWPControl, CW
 
     // CWPControl Interface Implementation
 
-    public void connect(String serverAddr, int serverPort, int frequency) throws IOException {
+    public void connect(String serverAddr, int serverPort, int frequency) {
         Log.d(TAG, "Pass connect to server request.");
         protocol.connect(serverAddr, serverPort, frequency);
     }

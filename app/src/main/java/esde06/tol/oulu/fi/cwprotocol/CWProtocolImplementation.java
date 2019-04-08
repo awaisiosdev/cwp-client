@@ -68,7 +68,7 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
         listener.onEvent(CWProtocolListener.CWPEvent.ELineDown, 0);
     }
 
-    public void connect(String serverAddr, int serverPort, int frequency) throws IOException {
+    public void connect(String serverAddr, int serverPort, int frequency) {
         Log.d(TAG, "Connect to CWP Server.");
         this.serverAddr = serverAddr;
         this.serverPort = serverPort;

@@ -76,7 +76,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, O
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        if (v instanceof ToggleButton){
+        if (v instanceof ToggleButton && event.getAction() == MotionEvent.ACTION_DOWN){
             try {
 
                 if (!connectionSwitch.isChecked()) {
@@ -107,10 +107,12 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, O
         CWPEvent event = (CWPEvent) arg;
         Log.d(TAG, "Received protocol event : " + event.name());
         if (event == CWPEvent.EConnected){
+            connectionSwitch.setChecked(false);
             Toast.makeText(getActivity().getApplicationContext(),
                     getString(R.string.Connected),
                     Toast.LENGTH_SHORT).show();
         } else if (event == CWPEvent.EDisconnected) {
+            connectionSwitch.setChecked(true);
             Toast.makeText(getActivity().getApplicationContext(),
                     getString(R.string.Disconnected),
                     Toast.LENGTH_SHORT).show();
