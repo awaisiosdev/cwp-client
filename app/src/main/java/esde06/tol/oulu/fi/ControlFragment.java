@@ -48,6 +48,8 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, O
         connectionSwitch = fragmentLayout.findViewById(R.id.connectionSwitch);
         connectionSwitch.setOnTouchListener(this);
 
+        connectionSwitch.setChecked(control.isConnected());
+
         preferences = PreferenceManager.getDefaultSharedPreferences(this.getContext());
         preferences.registerOnSharedPreferenceChangeListener(this);
 
@@ -77,10 +79,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, O
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         if (v instanceof ToggleButton && event.getAction() == MotionEvent.ACTION_DOWN){
-            try {
-
-                if (!connectionSwitch.isChecked()) {
-
+                if (!control.isConnected()){
                     String serverAddress = preferences.getString(serverAddressKey, "0.0.0.0");
                     String serverPort = preferences.getString(serverPortKey, "20000");
                     String frequency = preferences.getString(connectionFrequencyKey, "-1");
@@ -90,37 +89,37 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, O
 
                     control.connect(serverAddress, Integer.parseInt(serverPort), Integer.parseInt(frequency));
                 } else {
-                    Log.d(TAG, "Disconnect to protocol server request initiated.");
-                    control.disconnect();
+                    disconnect();
                 }
+        }
+        return true;
+    }
 
-            } catch (IOException e){
-
-            }
+    private void disconnect(){
+        try {
+            Log.d(TAG, "Disconnect to protocol server request initiated.");
+            control.disconnect();
+        } catch (IOException e){
 
         }
-        return false;
     }
 
     @Override
     public void update(Observable o, Object arg) {
         CWPEvent event = (CWPEvent) arg;
         Log.d(TAG, "Received protocol event : " + event.name());
-        if (event == CWPEvent.EConnected){
-            connectionSwitch.setChecked(false);
+        if (event == CWPEvent.EConnected || event == CWPEvent.EDisconnected){
+            int textId = event == CWPEvent.EConnected ? R.string.Connected : R.string.Disconnected;
             Toast.makeText(getActivity().getApplicationContext(),
-                    getString(R.string.Connected),
-                    Toast.LENGTH_SHORT).show();
-        } else if (event == CWPEvent.EDisconnected) {
-            connectionSwitch.setChecked(true);
-            Toast.makeText(getActivity().getApplicationContext(),
-                    getString(R.string.Disconnected),
+                    getString(textId),
                     Toast.LENGTH_SHORT).show();
         }
+        connectionSwitch.setChecked(control.isConnected());
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Log.d(TAG, "Preference changed - " + key);
+        disconnect();
     }
 }

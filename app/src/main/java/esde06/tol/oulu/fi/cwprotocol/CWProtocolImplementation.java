@@ -76,7 +76,6 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
         reader = new CWPConnectionReader(this);
         reader.startReading();
         Log.d(TAG, "Started Reading incoming messages.");
-        currentState = CWPState.Connected;
     }
 
     public void disconnect() throws IOException {
@@ -87,10 +86,9 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
                 reader.join();
             } catch (InterruptedException e){
             }
-
             reader = null;
         }
-        currentState = CWPState.Disconnected;
+
     }
 
     public CWPState getCurrentState() {
@@ -123,12 +121,12 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
         currentState = nextState;
         switch(nextState){
             case Connected:
-                listener.onEvent(CWProtocolListener.CWPEvent.EConnected, 0);
                 Log.d(TAG, "Sending Connected state change event.");
+                listener.onEvent(CWProtocolListener.CWPEvent.EConnected, 0);
                 break;
             case Disconnected:
-                listener.onEvent(CWProtocolListener.CWPEvent.EDisconnected, 0);
                 Log.d(TAG, "Sending Disconnected state change event.");
+                listener.onEvent(CWProtocolListener.CWPEvent.EDisconnected, 0);
                 break;
             case LineDown:
                 lineUpByServer = false;
