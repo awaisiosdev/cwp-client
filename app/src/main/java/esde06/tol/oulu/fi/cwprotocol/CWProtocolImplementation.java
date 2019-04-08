@@ -2,15 +2,11 @@ package esde06.tol.oulu.fi.cwprotocol;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.util.Observer;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.io.OutputStream;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.net.Socket;
-import java.util.Date;
 import android.util.Log;
 import android.os.Handler;
 
@@ -86,14 +82,12 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
     public void disconnect() throws IOException {
         Log.d(TAG, "Disconnect CWP Server.");
         if (reader != null) {
+            reader.stopReading();
             try {
-                reader.stopReading();
                 reader.join();
-            } catch (InterruptedException e) {
-
-            } catch (IOException e) {
-
+            } catch (InterruptedException e){
             }
+
             reader = null;
         }
         currentState = CWPState.Disconnected;
@@ -182,7 +176,7 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
             start();
         }
 
-        void stopReading() throws InterruptedException, IOException {
+        void stopReading() throws IOException {
             Log.d(TAG, "Reading Stopped");
             running = false;
             if (cwpSocket != null){
@@ -200,7 +194,7 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
             changeProtocolState(CWPState.Disconnected, 0);
         }
 
-        private void doInitialize() throws InterruptedException, IOException {
+        private void doInitialize() throws IOException {
             InetSocketAddress address = new InetSocketAddress(serverAddr, serverPort);
             cwpSocket = new Socket();
             cwpSocket.connect(address);
@@ -212,7 +206,7 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
         private int readLoop(byte [] bytes, int bytesToRead) throws IOException {
             int readNow = nis.read(bytes, bytesRead, bytesToRead - bytesRead);
             if (readNow == -1) {
-                throw new IOException("Read -1 from stream");
+                throw new IOException("Read -1 from server");
             }
             return readNow;
         }
@@ -270,16 +264,12 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
                         }
                     }
                 }
-            } catch (InterruptedException e) {
-
-            } catch (IOException e) {
-
+            }  catch (IOException e) {
+                changeProtocolState(CWPState.Disconnected, 0);
             }
-
-
         }
 
-        private void changeProtocolState(CWPState state, int param) throws InterruptedException {
+        private void changeProtocolState(CWPState state, int param) {
             Log.d(TAG, "Change protocol state to " + state);
             nextState = state;
             messageValue = param;
