@@ -32,6 +32,8 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
     private int serverPort = -1;
     private int messageValue = 0;
 
+    private long connectedStamp = 0;
+    private long lastLineUpStamp = 0;
 
     private ConditionVariable writerHandle = new ConditionVariable();
     private int data32bit = 0;
@@ -59,10 +61,12 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
         if (lineUpByServer){
            return;
         }
-        Log.d(TAG, "Sending line Up state change event.");
-
+        lastLineUpStamp = System.currentTimeMillis();
+        data32bit = (int) (lastLineUpStamp - connectedStamp);
         writerHandle.open();
         currentState = CWPState.LineUp;
+        Log.d(TAG, "Line Up message : " + data32bit);
+        Log.d(TAG, "Sending line Up state change event.");
         listener.onEvent(CWProtocolListener.CWPEvent.ELineUp, 0);
     }
 
@@ -72,11 +76,11 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
         if (lineUpByServer){
             return;
         }
-        Log.d(TAG, "Sending line Down state change event.");
-
-
+        data16bit = (short) (System.currentTimeMillis() - lastLineUpStamp);
         writerHandle.open();
         currentState = CWPState.LineDown;
+        Log.d(TAG, "Line Down message : " + data16bit);
+        Log.d(TAG, "Sending line Down state change event.");
         listener.onEvent(CWProtocolListener.CWPEvent.ELineDown, 0);
     }
 
@@ -131,6 +135,7 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
         this.currentFrequency = frequency;
         data32bit = frequency;
         writerHandle.open();
+        Log.d(TAG, "Frequency change message : " + data16bit);
     }
 
     public int frequency() {
@@ -142,6 +147,7 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
         currentState = nextState;
         switch(nextState){
             case Connected:
+                connectedStamp = System.currentTimeMillis();
                 Log.d(TAG, "Sending Connected state change event.");
                 listener.onEvent(CWProtocolListener.CWPEvent.EConnected, 0);
                 break;
