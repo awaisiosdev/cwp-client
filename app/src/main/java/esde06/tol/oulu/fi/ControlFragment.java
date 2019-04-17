@@ -115,6 +115,11 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, O
                     Toast.LENGTH_SHORT).show();
         }
         connectionSwitch.setChecked(control.isConnected());
+        if (event == CWPEvent.EChangedFrequency) {
+            Toast.makeText(getActivity().getApplicationContext(),
+                    "Frequency Changed",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

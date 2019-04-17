@@ -114,6 +114,12 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
 
     }
 
+    public void sendFrequency(){
+        data32bit = this.currentFrequency;
+        writerHandle.open();
+        Log.d(TAG, "Frequency change message : " + data32bit);
+    }
+
     public CWPState getCurrentState() {
         return currentState;
     }
@@ -130,12 +136,10 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
         return lineUpByServer;
     }
 
-    public void setFrequency(int frequency) throws IOException {
+    public void setFrequency(int frequency) {
         Log.d(TAG, "Set frequency to " + frequency);
-        this.currentFrequency = frequency;
-        data32bit = frequency;
-        writerHandle.open();
-        Log.d(TAG, "Frequency change message : " + data16bit);
+        currentFrequency = frequency;
+        sendFrequency();
     }
 
     public int frequency() {
@@ -144,7 +148,19 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
 
     @Override
     public void run() {
-        currentState = nextState;
+
+        if (currentState == CWPState.Connected && nextState == CWPState.LineDown){
+            if (messageValue != currentFrequency) {
+                Log.d(TAG, "Sending frequency change to the server");
+                sendFrequency();
+                return;
+            } else {
+                Log.d(TAG, "Frequency is now changed to " + currentFrequency);
+                Log.d(TAG, "Sending Frequency change event.");
+                listener.onEvent(CWProtocolListener.CWPEvent.EChangedFrequency, 0);
+            }
+        }
+
         switch(nextState){
             case Connected:
                 connectedStamp = System.currentTimeMillis();
@@ -175,8 +191,8 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
                     Log.d(TAG, "Sending Line Up state change event.");
                 }
                 break;
-
         }
+        currentState = nextState;
     }
 
     private class CWPConnectionReader extends Thread {
