@@ -1,8 +1,11 @@
 <resources>
     <string name="app_name">CWP Client 06</string>
+    <string name="Connect">Connect</string>
+    <string name="Disconnect">Disconnect</string>
     <string name="Connected">Connected</string>
     <string name="Disconnected">Disconnected</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="change">CHANGE</string>
 
     <!-- Connection settings -->
     <string name="pref_header_general">Connection</string>

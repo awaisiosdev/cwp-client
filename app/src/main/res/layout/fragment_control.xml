@@ -7,24 +7,68 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingTop="20dp"
         >
 
-        <ToggleButton
-            android:id="@+id/connectionSwitch"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60.0dp"
-            android:textOn="@string/Connected"
-            android:textOff="@string/Disconnected"
-            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="20dp"
+            >
+
+            <ToggleButton
+                android:id="@+id/connectionSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="60.0dp"
+                android:textOn="@string/Disconnect"
+                android:textOff="@string/Connect"
+                android:gravity="center"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/pref_connection_frequency_title"
+                android:textColor="@color/white"
+                android:gravity="left|center"
+                android:textSize="18sp"
+                android:layout_weight="0.2"
+                />
+
+            <EditText
+                android:id="@+id/frequencyValue"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:cursorVisible="true"
+                android:inputType="numberSigned"
+                android:layout_weight="1.2"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/white"
+                android:textCursorDrawable="@null"
+                android:imeOptions="actionDone"
             />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/change"
+                android:id="@+id/changeFrequency"
+                android:layout_weight="0.2"
+                />
 
+        </LinearLayout>
     </LinearLayout>
-
-
-
 </FrameLayout>
