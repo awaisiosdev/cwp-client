@@ -139,6 +139,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
 
         // Get the new frequency value
         int newFrequency = Integer.valueOf(frequencyValue.getText().toString());
+        control.setFrequency(newFrequency);
 
         // store the new frequency value in the preferences.
         SharedPreferences.Editor edit = preferences.edit();

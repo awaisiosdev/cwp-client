@@ -138,6 +138,13 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
 
     public void setFrequency(int frequency) {
         Log.d(TAG, "Set frequency to " + frequency);
+        if (currentState != CWPState.LineDown){
+            return;
+        }
+        currentState = CWPState.Connected;
+        Log.d(TAG, "Sending Connected state change event.");
+        listener.onEvent(CWProtocolListener.CWPEvent.EConnected, 0);
+
         currentFrequency = frequency;
         sendFrequency();
     }

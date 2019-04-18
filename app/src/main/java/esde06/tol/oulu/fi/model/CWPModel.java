@@ -50,7 +50,7 @@ public class CWPModel extends Observable implements CWPMessaging, CWPControl, CW
          return protocol.isConnected();
     }
 
-    public void setFrequency(int frequency) throws IOException {
+    public void setFrequency(int frequency) {
         Log.d(TAG, "Set Frequency to : " + frequency);
         protocol.setFrequency(frequency);
     }

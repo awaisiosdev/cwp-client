@@ -13,6 +13,6 @@ public interface CWPControl {
     public void disconnect()  throws IOException;
     public boolean isConnected();
     // Frequency management
-    public void setFrequency(int frequency) throws IOException;
+    public void setFrequency(int frequency);
     public int frequency();
 }
