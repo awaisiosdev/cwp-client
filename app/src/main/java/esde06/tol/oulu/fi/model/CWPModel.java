@@ -13,8 +13,14 @@ import esde06.tol.oulu.fi.cwprotocol.CWProtocolListener;
 public class CWPModel extends Observable implements CWPMessaging, CWPControl, CWProtocolListener  {
 
     private final static String TAG = "CWPModel";
+    private Signaller audioFeedback;
     CWProtocolImplementation protocol = new CWProtocolImplementation(this);
     // CWPMessaging Interface Implementation
+
+    public CWPModel(){
+        audioFeedback = new Signaller();
+        this.addObserver(audioFeedback);
+    }
 
     public void lineUp () throws IOException {
         Log.d(TAG, "Pass line Up request");
