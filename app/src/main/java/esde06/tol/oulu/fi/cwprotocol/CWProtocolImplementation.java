@@ -121,10 +121,6 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
         Log.d(TAG, "Disconnect CWP Server.");
         if (reader != null) {
             reader.stopReading();
-            try {
-                reader.join();
-            } catch (InterruptedException e){
-            }
             reader = null;
         }
         if (writer != null){
@@ -135,9 +131,24 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
     }
 
     public void sendFrequency(){
-        data32bit = this.currentFrequency;
-        writerHandle.open();
+
+        if (currentState != CWPState.LineDown){
+            return;
+        }
+
+        try {
+            lock.acquire();
+            data32bit = this.currentFrequency;
+            currentState = CWPState.Connected;
+        } catch (InterruptedException e){
+            e.printStackTrace();
+        } finally {
+            lock.release();
+            writerHandle.open();
+        }
         Log.d(TAG, "Frequency change message : " + data32bit);
+        Log.d(TAG, "Sending Connected state change event.");
+        listener.onEvent(CWProtocolListener.CWPEvent.EConnected, 0);
     }
 
     public CWPState getCurrentState() {
@@ -158,21 +169,6 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
 
     public void setFrequency(int frequency) {
         Log.d(TAG, "Set frequency to " + frequency);
-        if (currentState != CWPState.LineDown){
-            return;
-        }
-
-        try {
-            lock.acquire();
-            currentState = CWPState.Connected;
-        } catch (InterruptedException e){
-            e.printStackTrace();
-        } finally {
-            lock.release();
-        }
-
-        Log.d(TAG, "Sending Connected state change event.");
-        listener.onEvent(CWProtocolListener.CWPEvent.EConnected, 0);
 
         currentFrequency = frequency;
         sendFrequency();
