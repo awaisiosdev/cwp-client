@@ -342,21 +342,21 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
         }
 
         private void sendMessage(int msg) throws IOException {
-            ByteBuffer buffer = ByteBuffer.allocate(4);
-            buffer.order(ByteOrder.BIG_ENDIAN);
-            buffer.putInt(msg);
-            buffer.position(0);
-            byte[] data = buffer.array();
+            outBuffer = ByteBuffer.allocate(4);
+            outBuffer.order(ByteOrder.BIG_ENDIAN);
+            outBuffer.putInt(msg);
+            outBuffer.position(0);
+            byte[] data = outBuffer.array();
             nos.write(data);
             nos.flush();
         }
 
         private void sendMessage(short msg) throws IOException {
-           ByteBuffer buffer = ByteBuffer.allocate(2);
-           buffer.order(ByteOrder.BIG_ENDIAN);
-           buffer.putShort(msg);
-           buffer.position(0);
-           byte[] data = buffer.array();
+           outBuffer = ByteBuffer.allocate(2);
+           outBuffer.order(ByteOrder.BIG_ENDIAN);
+           outBuffer.putShort(msg);
+           outBuffer.position(0);
+           byte[] data = outBuffer.array();
            nos.write(data);
            nos.flush();
         }
