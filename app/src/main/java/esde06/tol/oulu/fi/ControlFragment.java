@@ -25,6 +25,7 @@ import java.util.Observer;
 
 import esde06.tol.oulu.fi.cwprotocol.CWPControl;
 import esde06.tol.oulu.fi.cwprotocol.CWProtocolListener.CWPEvent;
+import esde06.tol.oulu.fi.model.CWPMessage;
 
 public class ControlFragment extends Fragment implements View.OnTouchListener, TextView.OnEditorActionListener, Observer, SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -37,7 +38,6 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
     private String serverAddressKey;
     private String serverPortKey;
     private String connectionFrequencyKey;
-
 
     public ControlFragment() {
     }
@@ -149,16 +149,16 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
 
     @Override
     public void update(Observable o, Object arg) {
-        CWPEvent event = (CWPEvent) arg;
-        Log.d(TAG, "Received protocol event : " + event.name());
-        if (event == CWPEvent.EConnected || event == CWPEvent.EDisconnected){
-            int textId = event == CWPEvent.EConnected ? R.string.Connected : R.string.Disconnected;
+        CWPMessage msg = (CWPMessage) arg;
+        Log.d(TAG, "Received protocol event : " + msg.event.name());
+        if (msg.event == CWPEvent.EConnected || msg.event == CWPEvent.EDisconnected){
+            int textId = msg.event == CWPEvent.EConnected ? R.string.Connected : R.string.Disconnected;
             Toast.makeText(getActivity().getApplicationContext(),
                     getString(textId),
                     Toast.LENGTH_SHORT).show();
         }
         connectionSwitch.setChecked(control.isConnected());
-        if (event == CWPEvent.EChangedFrequency) {
+        if (msg.event == CWPEvent.EChangedFrequency) {
             Toast.makeText(getActivity().getApplicationContext(),
                     "Frequency Changed",
                     Toast.LENGTH_SHORT).show();

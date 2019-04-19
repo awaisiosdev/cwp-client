@@ -69,7 +69,7 @@ public class CWPModel extends Observable implements CWPMessaging, CWPControl, CW
     public void onEvent(CWPEvent event, int param) {
         Log.d(TAG, "Event received from protocol implementation. Notifying observers.");
         setChanged();
-        notifyObservers(event);
+        notifyObservers(new CWPMessage(event, param));
     }
 
 

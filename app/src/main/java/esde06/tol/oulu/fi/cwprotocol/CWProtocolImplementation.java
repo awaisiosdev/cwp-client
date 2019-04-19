@@ -164,7 +164,7 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
             } else {
                 Log.d(TAG, "Frequency is now changed to " + currentFrequency);
                 Log.d(TAG, "Sending Frequency change event.");
-                listener.onEvent(CWProtocolListener.CWPEvent.EChangedFrequency, 0);
+                listener.onEvent(CWProtocolListener.CWPEvent.EChangedFrequency, messageValue);
             }
         }
 
@@ -172,29 +172,29 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
             case Connected:
                 connectedStamp = System.currentTimeMillis();
                 Log.d(TAG, "Sending Connected state change event.");
-                listener.onEvent(CWProtocolListener.CWPEvent.EConnected, 0);
+                listener.onEvent(CWProtocolListener.CWPEvent.EConnected, messageValue);
                 break;
             case Disconnected:
                 Log.d(TAG, "Sending Disconnected state change event.");
-                listener.onEvent(CWProtocolListener.CWPEvent.EDisconnected, 0);
+                listener.onEvent(CWProtocolListener.CWPEvent.EDisconnected, messageValue);
                 break;
             case LineDown:
                 lineUpByServer = false;
                 if (lineUpByUser) {
-                    listener.onEvent(CWProtocolListener.CWPEvent.EServerStateChange, 0);
+                    listener.onEvent(CWProtocolListener.CWPEvent.EServerStateChange, messageValue);
                     Log.d(TAG, "Sending server state change event");
                 } else {
-                    listener.onEvent(CWProtocolListener.CWPEvent.ELineDown, 0);
+                    listener.onEvent(CWProtocolListener.CWPEvent.ELineDown, messageValue);
                     Log.d(TAG, "Sending Line Down state change event.");
                 }
                 break;
             case LineUp:
                 lineUpByServer = true;
                 if (lineUpByUser) {
-                    listener.onEvent(CWProtocolListener.CWPEvent.EServerStateChange, 0);
+                    listener.onEvent(CWProtocolListener.CWPEvent.EServerStateChange, messageValue);
                     Log.d(TAG, "Sending server state change event");
                 } else {
-                    listener.onEvent(CWProtocolListener.CWPEvent.ELineUp, 0);
+                    listener.onEvent(CWProtocolListener.CWPEvent.ELineUp, messageValue);
                     Log.d(TAG, "Sending Line Up state change event.");
                 }
                 break;

@@ -28,9 +28,9 @@ public class Signaller implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        CWPEvent event = (CWPEvent) arg;
-        Log.d(TAG, "Received protocol event : " + event.name());
-        if (event == CWPEvent.ELineUp){
+       CWPMessage msg = (CWPMessage) arg;
+        Log.d(TAG, "Received protocol event : " + msg.event.name());
+        if (msg.event == CWPEvent.ELineUp){
             start();
         } else if(isBeepStarted) {
             stop();

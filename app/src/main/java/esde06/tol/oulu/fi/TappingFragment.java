@@ -16,6 +16,7 @@ import java.util.Observable;
 import java.util.Observer;
 import esde06.tol.oulu.fi.cwprotocol.CWPMessaging;
 import esde06.tol.oulu.fi.cwprotocol.CWProtocolListener.CWPEvent;
+import esde06.tol.oulu.fi.model.CWPMessage;
 
 public class TappingFragment extends Fragment implements View.OnTouchListener, Observer {
 
@@ -124,8 +125,8 @@ public class TappingFragment extends Fragment implements View.OnTouchListener, O
 
     @Override
     public void update(Observable o, Object arg) {
-        CWPEvent event = (CWPEvent) arg;
-        changeLineStatus(event);
-        Log.d(TAG, "Received protocol event: " + event.name());
+        CWPMessage msg = (CWPMessage) arg;
+        changeLineStatus(msg.event);
+        Log.d(TAG, "Received protocol event: " + msg.event.name());
     }
 }
