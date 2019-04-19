@@ -26,26 +26,25 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
 
     private CWPConnectionReader reader = null;
     private CWPConnectionWriter writer = null;
+    private Handler receiveHandler = new Handler();
+    private CWProtocolListener listener;
+
     private static final int BUFFER_LENGTH = 64;
     private OutputStream nos = null; //Network Output Stream
     private ByteBuffer outBuffer = null;
+
     private String serverAddress = null;
     private int serverPort = -1;
-    private int messageValue = 0;
+    private int currentFrequency = CWPControl.DEFAULT_FREQUENCY;
 
+    private int messageValue = 0;
+    private int data32bit = 0;
+    private short data16bit = 0;
     private long connectedStamp = 0;
     private long lastLineUpStamp = 0;
 
     private Semaphore lock = new Semaphore(1);
-
     private ConditionVariable writerHandle = new ConditionVariable();
-    private int data32bit = 0;
-    private short data16bit = 0;
-
-    private int currentFrequency = CWPControl.DEFAULT_FREQUENCY;
-
-    private Handler receiveHandler = new Handler();
-    private CWProtocolListener listener;
 
 
     public CWProtocolImplementation(CWProtocolListener listener){
@@ -399,7 +398,6 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
 
         @Override
         public void run(){
-
             while (running) {
                 writerHandle.block();     // block thread execution when there is no data to send.
 
@@ -430,9 +428,6 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
                 }
                 writerHandle.close(); // close so thread does not keep running until protocol implementation opens it again.
             }
-
-
         }
     }
-
 }
