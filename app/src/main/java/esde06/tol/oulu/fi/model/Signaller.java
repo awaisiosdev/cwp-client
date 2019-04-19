@@ -13,10 +13,15 @@ public class Signaller implements Observer {
     private final static String TAG = "Signaller";
     private ToneGenerator generator;
     private Boolean isBeepStarted = false;
+    private Boolean isMuted = false;
+    private int alertVolume = ToneGenerator.MAX_VOLUME;
 
     private void start(){
-        generator = new ToneGenerator(AudioManager.STREAM_DTMF, ToneGenerator.MAX_VOLUME);
-        generator.startTone(ToneGenerator.TONE_DTMF_5, 1000);
+        if (isMuted){
+            return;
+        }
+        generator = new ToneGenerator(AudioManager.STREAM_DTMF, alertVolume);
+        generator.startTone(ToneGenerator.TONE_DTMF_5);
         isBeepStarted = true;
     }
 
@@ -35,8 +40,6 @@ public class Signaller implements Observer {
         } else if(isBeepStarted) {
             stop();
         }
-
-
     }
 }
 
