@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteOrder;
 import java.util.Observer;
+import java.util.concurrent.Semaphore;
 import java.io.OutputStream;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -28,12 +29,14 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
     private static final int BUFFER_LENGTH = 64;
     private OutputStream nos = null; //Network Output Stream
     private ByteBuffer outBuffer = null;
-    private String serverAddr = null;
+    private String serverAddress = null;
     private int serverPort = -1;
     private int messageValue = 0;
 
     private long connectedStamp = 0;
     private long lastLineUpStamp = 0;
+
+    private Semaphore lock = new Semaphore(1);
 
     private ConditionVariable writerHandle = new ConditionVariable();
     private int data32bit = 0;
@@ -61,10 +64,19 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
         if (lineUpByServer){
            return;
         }
-        lastLineUpStamp = System.currentTimeMillis();
-        data32bit = (int) (lastLineUpStamp - connectedStamp);
-        writerHandle.open();
-        currentState = CWPState.LineUp;
+
+        try {
+            lock.acquire();
+            lastLineUpStamp = System.currentTimeMillis();
+            data32bit = (int) (lastLineUpStamp - connectedStamp);
+            currentState = CWPState.LineUp;
+        } catch (InterruptedException e){
+            e.printStackTrace();
+        } finally {
+            lock.release();
+            writerHandle.open();
+        }
+
         Log.d(TAG, "Line Up message : " + data32bit);
         Log.d(TAG, "Sending line Up state change event.");
         listener.onEvent(CWProtocolListener.CWPEvent.ELineUp, 0);
@@ -76,9 +88,17 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
         if (lineUpByServer){
             return;
         }
-        data16bit = (short) (System.currentTimeMillis() - lastLineUpStamp);
-        writerHandle.open();
-        currentState = CWPState.LineDown;
+        try {
+            lock.acquire();
+            data16bit = (short) (System.currentTimeMillis() - lastLineUpStamp);
+            currentState = CWPState.LineDown;
+        } catch (InterruptedException e){
+            e.printStackTrace();
+        } finally {
+            lock.release();
+            writerHandle.open();
+        }
+
         Log.d(TAG, "Line Down message : " + data16bit);
         Log.d(TAG, "Sending line Down state change event.");
         listener.onEvent(CWProtocolListener.CWPEvent.ELineDown, 0);
@@ -86,7 +106,7 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
 
     public void connect(String serverAddr, int serverPort, int frequency) {
         Log.d(TAG, "Connect to CWP Server.");
-        this.serverAddr = serverAddr;
+        this.serverAddress = serverAddr;
         this.serverPort = serverPort;
         this.currentFrequency = frequency;
         reader = new CWPConnectionReader(this);
@@ -141,7 +161,16 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
         if (currentState != CWPState.LineDown){
             return;
         }
-        currentState = CWPState.Connected;
+
+        try {
+            lock.acquire();
+            currentState = CWPState.Connected;
+        } catch (InterruptedException e){
+            e.printStackTrace();
+        } finally {
+            lock.release();
+        }
+
         Log.d(TAG, "Sending Connected state change event.");
         listener.onEvent(CWProtocolListener.CWPEvent.EConnected, 0);
 
@@ -155,16 +184,20 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
 
     @Override
     public void run() {
+        CWPState previousState = currentState;
+        currentState = nextState;
+        int receivedData = messageValue;
+        lock.release();
 
-        if (currentState == CWPState.Connected && nextState == CWPState.LineDown){
-            if (messageValue != currentFrequency) {
+        if (previousState == CWPState.Connected && currentState == CWPState.LineDown){
+            if (receivedData != currentFrequency) {
                 Log.d(TAG, "Sending frequency change to the server");
                 sendFrequency();
                 return;
             } else {
                 Log.d(TAG, "Frequency is now changed to " + currentFrequency);
                 Log.d(TAG, "Sending Frequency change event.");
-                listener.onEvent(CWProtocolListener.CWPEvent.EChangedFrequency, messageValue);
+                listener.onEvent(CWProtocolListener.CWPEvent.EChangedFrequency, receivedData);
             }
         }
 
@@ -172,34 +205,34 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
             case Connected:
                 connectedStamp = System.currentTimeMillis();
                 Log.d(TAG, "Sending Connected state change event.");
-                listener.onEvent(CWProtocolListener.CWPEvent.EConnected, messageValue);
+                listener.onEvent(CWProtocolListener.CWPEvent.EConnected, receivedData);
                 break;
             case Disconnected:
                 Log.d(TAG, "Sending Disconnected state change event.");
-                listener.onEvent(CWProtocolListener.CWPEvent.EDisconnected, messageValue);
+                listener.onEvent(CWProtocolListener.CWPEvent.EDisconnected, receivedData);
                 break;
             case LineDown:
                 lineUpByServer = false;
                 if (lineUpByUser) {
-                    listener.onEvent(CWProtocolListener.CWPEvent.EServerStateChange, messageValue);
+                    listener.onEvent(CWProtocolListener.CWPEvent.EServerStateChange, receivedData);
                     Log.d(TAG, "Sending server state change event");
                 } else {
-                    listener.onEvent(CWProtocolListener.CWPEvent.ELineDown, messageValue);
+                    listener.onEvent(CWProtocolListener.CWPEvent.ELineDown, receivedData);
                     Log.d(TAG, "Sending Line Down state change event.");
                 }
                 break;
             case LineUp:
                 lineUpByServer = true;
                 if (lineUpByUser) {
-                    listener.onEvent(CWProtocolListener.CWPEvent.EServerStateChange, messageValue);
+                    listener.onEvent(CWProtocolListener.CWPEvent.EServerStateChange, receivedData);
                     Log.d(TAG, "Sending server state change event");
                 } else {
-                    listener.onEvent(CWProtocolListener.CWPEvent.ELineUp, messageValue);
+                    listener.onEvent(CWProtocolListener.CWPEvent.ELineUp, receivedData);
                     Log.d(TAG, "Sending Line Up state change event.");
                 }
                 break;
         }
-        currentState = nextState;
+
     }
 
     private class CWPConnectionReader extends Thread {
@@ -243,7 +276,7 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
         }
 
         private void doInitialize() throws IOException {
-            InetSocketAddress address = new InetSocketAddress(serverAddr, serverPort);
+            InetSocketAddress address = new InetSocketAddress(serverAddress, serverPort);
             cwpSocket = new Socket();
             cwpSocket.connect(address);
             nis = cwpSocket.getInputStream();
@@ -279,7 +312,7 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
         public void run() {
             try {
                 doInitialize();
-                ByteBuffer buffer = ByteBuffer.allocate(100);
+                ByteBuffer buffer = ByteBuffer.allocate(BUFFER_LENGTH);
                 while (running) {
                     bytesRead = bytesRead + readLoop(buffer.array(), this.bytesToRead);
                     Log.d(TAG, "Bytes Read: " + bytesRead + " , Bytes To Read: " + this.bytesToRead);
@@ -319,9 +352,16 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
 
         private void changeProtocolState(CWPState state, int param) {
             Log.d(TAG, "Change protocol state to " + state);
-            nextState = state;
-            messageValue = param;
-            receiveHandler.post(myProcessor);
+            try {
+                lock.acquire();
+                nextState = state;
+                messageValue = param;
+            } catch (InterruptedException e){
+                e.printStackTrace();
+            } finally {
+                receiveHandler.post(myProcessor);
+            }
+
         }
     }
 
@@ -363,22 +403,39 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
 
         @Override
         public void run(){
-            try {
-                while (running) {
-                    writerHandle.block();     // block thread execution when there is no data to send.
-                    if (data32bit > 0 || data32bit < 0){
+
+            while (running) {
+                writerHandle.block();     // block thread execution when there is no data to send.
+
+                if (data32bit > 0 || data32bit < 0){
+                    try {
+                        lock.acquire();
                         sendMessage(data32bit);
+                    } catch (IOException e){
+                        e.printStackTrace();
+                    } catch(InterruptedException e) {
+                        e.printStackTrace();
+                    } finally {
                         data32bit = 0;
-                    } else if (data16bit > 0){
-                        sendMessage(data16bit);
-                        data16bit = 0;
+                        lock.release();
                     }
-                    writerHandle.close(); // close so thread does not keep running until protocol implementation opens it again.
+                } else if (data16bit > 0){
+                    try {
+                        lock.acquire();
+                        sendMessage(data16bit);
+                    } catch (IOException e){
+                        e.printStackTrace();
+                    } catch(InterruptedException e) {
+                        e.printStackTrace();
+                    } finally {
+                        data16bit = 0;
+                        lock.release();
+                    }
                 }
-
-            } catch (IOException e) {
-
+                writerHandle.close(); // close so thread does not keep running until protocol implementation opens it again.
             }
+
+
         }
     }
 
