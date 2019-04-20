@@ -34,6 +34,7 @@ public class Signaller implements Observer {
     @Override
     public void update(Observable o, Object arg) {
        CWPMessage msg = (CWPMessage) arg;
+        /* TODO: Fix code here. */
         Log.d(TAG, "Received protocol event : " + msg.event.name());
         if (msg.event == CWPEvent.ELineUp){
             start();
