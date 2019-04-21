@@ -14,8 +14,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.io.IOException;
+
 import esde06.tol.oulu.fi.cwprotocol.CWPControl;
 import esde06.tol.oulu.fi.cwprotocol.CWPMessaging;
+import esde06.tol.oulu.fi.model.CWPAudio;
 import esde06.tol.oulu.fi.model.CWPModel;
 
 public class MainActivity extends AppCompatActivity implements CWPProvider {
@@ -46,24 +49,6 @@ public class MainActivity extends AppCompatActivity implements CWPProvider {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        if (cwpModel != null){
-            Log.d(TAG, "Audio Feedback turned On!");
-            cwpModel.turnOnAudioFeedback();
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (cwpModel != null){
-            Log.d(TAG, "Audio Feedback turned Off!");
-            cwpModel.turnOffAudioFeedback();
-        }
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -86,6 +71,9 @@ public class MainActivity extends AppCompatActivity implements CWPProvider {
         return cwpModel;
     }
     public CWPControl getControl() {
+        return cwpModel;
+    }
+    public CWPAudio getAudio() {
         return cwpModel;
     }
 

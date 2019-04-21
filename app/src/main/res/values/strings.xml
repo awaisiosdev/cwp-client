@@ -15,7 +15,7 @@
 
     <!-- Signal Alert Settings -->
     <string name="pref_header_alert">Signal Alert</string>
-    <string name="pref_alert_beep_title">Enable Beep</string>
+    <string name="pref_alert_beep_title">Mute Beep</string>
     <string name="pref_alert_beep_summary">The client generates a beep whenever line is set UP by the user or server.</string>
     <string name="pref_alert_beep_volume">Beep Volume</string>
     <string name="pref_alert_beep_volume_summary">Set beep volume between 0 and 100.</string>

@@ -26,11 +26,13 @@ import java.util.Observer;
 import esde06.tol.oulu.fi.cwprotocol.CWPControl;
 import esde06.tol.oulu.fi.cwprotocol.CWProtocolListener.CWPEvent;
 import esde06.tol.oulu.fi.model.CWPMessage;
+import esde06.tol.oulu.fi.model.CWPAudio;
 
 public class ControlFragment extends Fragment implements View.OnTouchListener, TextView.OnEditorActionListener, Observer, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private final static String TAG = "ControlFragment";
     CWPControl control;
+    CWPAudio audioHandle;
     ToggleButton connectionSwitch;
     EditText frequencyValue;
     Button changeFrequency;
@@ -38,16 +40,15 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
     private String serverAddressKey;
     private String serverPortKey;
     private String connectionFrequencyKey;
-
-    private Boolean autoConnect = true;
+    private String beepMuteKey;
+    private String beepVolumeKey;
+    private Boolean autoReconnect;
 
     public ControlFragment() {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+    public void onCreate(Bundle savedInstanceState) { super.onCreate(savedInstanceState); }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,6 +59,8 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
         serverAddressKey = getString(R.string.pref_key_server_address);
         serverPortKey = getString(R.string.pref_key_server_port);
         connectionFrequencyKey = getString(R.string.pref_key_connection_frequency);
+        beepMuteKey = getString(R.string.pref_key_signal_beep_mute);
+        beepVolumeKey = getString(R.string.pref_key_signal_beep_volume);
 
         connectionSwitch = fragmentLayout.findViewById(R.id.connectionSwitch);
         connectionSwitch.setOnTouchListener(this);
@@ -71,18 +74,20 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
 
         connectionSwitch.setChecked(control.isConnected());
         frequencyValue.setText(preferences.getString(connectionFrequencyKey, "-1"));
-
         return fragmentLayout;
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        setupAudioFeedback();
+        connect();
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        audioHandle.turnOffAudioFeedback();
         if (control.isConnected()){
             disconnect();
         }
@@ -92,6 +97,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
     public void onAttach(Context context) {
         super.onAttach(context);
         CWPProvider provider = (CWPProvider) getActivity();
+        audioHandle = provider.getAudio();
         control = provider.getControl();
         control.addObserver(this);
         Log.d(TAG, "Started observing protocol events.");
@@ -164,6 +170,16 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
         edit.apply();
     }
 
+    private void setupAudioFeedback(){
+        Boolean isAudioMuted = preferences.getBoolean(beepMuteKey, true);
+        if (isAudioMuted){
+            audioHandle.turnOffAudioFeedback();
+            return;
+        }
+        int alertVolume = preferences.getInt(beepVolumeKey, 50);
+        audioHandle.turnOnAudioFeedback(alertVolume);
+    }
+
     @Override
     public void update(Observable o, Object arg) {
         CWPMessage msg = (CWPMessage) arg;
@@ -174,17 +190,23 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
         }
         connectionSwitch.setChecked(control.isConnected());
         if (msg.event == CWPEvent.EChangedFrequency) {
-            showToast("Frequency changed");
+            showToast("Frequency Set: " + msg.param);
         }
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Log.d(TAG, "Preference changed - " + key);
-        if (key != connectionFrequencyKey){
+        if (key.equals(serverAddressKey)  || key.equals(serverPortKey)) {
             if (control.isConnected()){
                 disconnect();
             }
+        } else if (key.equals(connectionFrequencyKey)){
+            if (control.isConnected()){
+
+            }
+        } else if (key.equals(beepMuteKey) || key.equals(beepVolumeKey)){
+            setupAudioFeedback();
         }
     }
 

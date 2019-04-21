@@ -1,7 +1,10 @@
 package esde06.tol.oulu.fi.model;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.util.Observer;
@@ -12,17 +15,12 @@ public class Signaller implements Observer {
 
     private final static String TAG = "Signaller";
     private ToneGenerator generator;
-    private Boolean isMuted = false;
-    private int alertVolume = ToneGenerator.MAX_VOLUME;
 
-    public Signaller () {
+    public Signaller (int alertVolume) {
         generator = new ToneGenerator(AudioManager.STREAM_DTMF, alertVolume);
     }
 
     private void start(){
-        if (isMuted){
-            return;
-        }
         generator.startTone(ToneGenerator.TONE_DTMF_5);
     }
 

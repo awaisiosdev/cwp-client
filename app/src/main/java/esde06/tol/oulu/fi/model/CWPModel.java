@@ -1,6 +1,7 @@
 package esde06.tol.oulu.fi.model;
 
 import android.util.Log;
+import android.content.Context;
 
 import java.io.IOException;
 import java.util.Observable;
@@ -10,7 +11,7 @@ import esde06.tol.oulu.fi.cwprotocol.CWPMessaging;
 import esde06.tol.oulu.fi.cwprotocol.CWProtocolImplementation;
 import esde06.tol.oulu.fi.cwprotocol.CWProtocolListener;
 
-public class CWPModel extends Observable implements CWPMessaging, CWPControl, CWProtocolListener  {
+public class CWPModel extends Observable implements CWPMessaging, CWPControl, CWProtocolListener, CWPAudio {
 
     private final static String TAG = "CWPModel";
     private Signaller audioFeedback;
@@ -68,14 +69,18 @@ public class CWPModel extends Observable implements CWPMessaging, CWPControl, CW
     }
 
 
-    public void turnOnAudioFeedback(){
-        audioFeedback = new Signaller();
+    public void turnOnAudioFeedback(int alertVolume){
+        Log.d(TAG, "Audio Feedback turned On! - Volume : " + alertVolume);
+        audioFeedback = new Signaller(alertVolume);
         this.addObserver(audioFeedback);
     }
 
     public void turnOffAudioFeedback(){
-        this.deleteObserver(audioFeedback);
-        audioFeedback = null;
+        Log.d(TAG, "Audio Feedback turned off!");
+        if (audioFeedback != null){
+            this.deleteObserver(audioFeedback);
+            audioFeedback = null;
+        }
     }
 
 
