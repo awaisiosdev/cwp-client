@@ -4,8 +4,7 @@
     <SwitchPreference
         android:key="@string/pref_key_signal_beep_mute"
         android:title="@string/pref_alert_beep_title"
-        android:summary="@string/pref_alert_beep_summary"
-        android:defaultValue="false"
+        android:defaultValue="@string/pref_default_beep_mute"
         />
 
     <SeekBarPreference
@@ -13,6 +12,6 @@
         android:title="@string/pref_alert_beep_volume"
         android:summary="@string/pref_alert_beep_volume_summary"
         android:max="100"
-        android:defaultValue="50" />
+        android:defaultValue="@string/pref_default_beep_volume" />
 
 </PreferenceScreen>

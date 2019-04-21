@@ -2,7 +2,7 @@
     >
 
     <EditTextPreference
-        android:defaultValue="0.0.0.0"
+        android:defaultValue="@string/pref_default_server_address"
         android:inputType="textUri"
         android:key="@string/pref_key_server_address"
         android:maxLines="1"
@@ -10,19 +10,11 @@
         android:title="@string/pref_server_address_title" />
 
     <EditTextPreference
-        android:defaultValue="20000"
+        android:defaultValue="@string/pref_default_server_port"
         android:inputType="number"
         android:key="@string/pref_key_server_port"
         android:maxLines="1"
         android:selectAllOnFocus="true"
         android:title="@string/pref_server_port_title" />
-
-    <EditTextPreference
-        android:defaultValue="-1"
-        android:inputType="numberSigned"
-        android:key="@string/pref_key_connection_frequency"
-        android:selectAllOnFocus="true"
-        android:singleLine="true"
-        android:title="@string/pref_connection_frequency_title" />
 
 </PreferenceScreen>

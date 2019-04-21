@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <SwitchPreference
+        android:key="@string/pref_key_auto_reconnect"
+        android:title="@string/pref_auto_reconnect_title"
+        android:defaultValue="@string/pref_default_auto_reconnect"
+        />
+
+    <EditTextPreference
+        android:defaultValue="@string/pref_default_connection_frequency"
+        android:inputType="numberSigned"
+        android:key="@string/pref_key_connection_frequency"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_connection_frequency_title" />
+
+</PreferenceScreen>

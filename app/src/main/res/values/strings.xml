@@ -11,19 +11,33 @@
     <string name="pref_header_cwpserver">CWP Server</string>
     <string name="pref_server_address_title">Server Address</string>
     <string name="pref_server_port_title">Server Port</string>
+
+    <!-- Connection settings -->
+    <string name="pref_header_connection">Connection</string>
     <string name="pref_connection_frequency_title">Frequency</string>
+    <string name="pref_auto_reconnect_title">Auto Reconnect</string>
 
     <!-- Signal Alert Settings -->
-    <string name="pref_header_alert">Signal Alert</string>
-    <string name="pref_alert_beep_title">Mute Beep</string>
-    <string name="pref_alert_beep_summary">The client generates a beep whenever line is set UP by the user or server.</string>
-    <string name="pref_alert_beep_volume">Beep Volume</string>
-    <string name="pref_alert_beep_volume_summary">Set beep volume between 0 and 100.</string>
+    <string name="pref_header_alert">Beep</string>
+    <string name="pref_alert_beep_title">Mute</string>
+    <string name="pref_alert_beep_volume">Volume</string>
+    <string name="pref_alert_beep_volume_summary">Set volume between 0 and 100.</string>
 
-    <string name="pref_key_server_address">server_address</string>
+    <!-- Shared Preference Keys -->
+    <string name="pref_key_auto_reconnect">auto_reconnect</string>
     <string name="pref_key_connection_frequency">connection_frequency</string>
+    <string name="pref_key_server_address">server_address</string>
     <string name="pref_key_server_port">server_port</string>
     <string name="pref_key_signal_beep_mute">signal_beep_mute</string>
     <string name="pref_key_signal_beep_volume">signal_beep_volume</string>
+    <string name="pref_key_should_auto_connect">should_auto_connect</string>
+
+    <!-- Default Configuration Values -->
+    <string name="pref_default_server_address">cwp.opimobi.com</string>
+    <string name="pref_default_server_port">20000</string>
+    <string name="pref_default_connection_frequency">-1</string>
+    <string name="pref_default_auto_reconnect">true</string>
+    <string name="pref_default_beep_mute">false</string>
+    <string name="pref_default_beep_volume">50</string>
 
 </resources>

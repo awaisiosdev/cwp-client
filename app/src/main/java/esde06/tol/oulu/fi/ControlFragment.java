@@ -37,12 +37,14 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
     EditText frequencyValue;
     Button changeFrequency;
     SharedPreferences preferences;
+
     private String serverAddressKey;
     private String serverPortKey;
     private String connectionFrequencyKey;
     private String beepMuteKey;
     private String beepVolumeKey;
-    private Boolean autoReconnect;
+    private String autoReconnectKey;
+    private String shouldConnectAuto;
 
     public ControlFragment() {
     }
@@ -56,11 +58,8 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
         // Inflate the layout for this fragment
         View fragmentLayout = inflater.inflate(R.layout.fragment_control, container, false);
 
-        serverAddressKey = getString(R.string.pref_key_server_address);
-        serverPortKey = getString(R.string.pref_key_server_port);
-        connectionFrequencyKey = getString(R.string.pref_key_connection_frequency);
-        beepMuteKey = getString(R.string.pref_key_signal_beep_mute);
-        beepVolumeKey = getString(R.string.pref_key_signal_beep_volume);
+
+        setupSharedPreferenes();
 
         connectionSwitch = fragmentLayout.findViewById(R.id.connectionSwitch);
         connectionSwitch.setOnTouchListener(this);
@@ -69,10 +68,6 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
         changeFrequency = fragmentLayout.findViewById(R.id.changeFrequency);
         changeFrequency.setOnTouchListener(this);
 
-        preferences = PreferenceManager.getDefaultSharedPreferences(this.getContext());
-        preferences.registerOnSharedPreferenceChangeListener(this);
-
-        connectionSwitch.setChecked(control.isConnected());
         frequencyValue.setText(preferences.getString(connectionFrequencyKey, "-1"));
         return fragmentLayout;
     }
@@ -80,8 +75,11 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
     @Override
     public void onStart() {
         super.onStart();
+        connectionSwitch.setChecked(control.isConnected());
         setupAudioFeedback();
-        connect();
+        if (preferences.getBoolean(autoReconnectKey, true) && preferences.getBoolean(shouldConnectAuto, false)){
+            connect();
+        }
     }
 
     @Override
@@ -145,6 +143,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
         showToast(message);
 
         control.connect(serverAddress, Integer.parseInt(serverPort), Integer.parseInt(frequency));
+        setShouldConnectAuto(false);
     }
 
     private void disconnect(){
@@ -186,6 +185,26 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
         imm.hideSoftInputFromWindow(frequencyValue.getWindowToken(), 0);
     }
 
+    private void setupSharedPreferenes(){
+        // Initialize the shared preference keys
+        serverAddressKey = getString(R.string.pref_key_server_address);
+        serverPortKey = getString(R.string.pref_key_server_port);
+        connectionFrequencyKey = getString(R.string.pref_key_connection_frequency);
+        beepMuteKey = getString(R.string.pref_key_signal_beep_mute);
+        beepVolumeKey = getString(R.string.pref_key_signal_beep_volume);
+        autoReconnectKey = getString(R.string.pref_key_auto_reconnect);
+        shouldConnectAuto = getString(R.string.pref_key_should_auto_connect);
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(this.getContext());
+        preferences.registerOnSharedPreferenceChangeListener(this);
+    }
+
+    private void setShouldConnectAuto(Boolean flag){
+        SharedPreferences.Editor edit = preferences.edit();
+        edit.putBoolean(shouldConnectAuto,flag);
+        edit.apply();
+    }
+
     @Override
     public void update(Observable o, Object arg) {
         CWPMessage msg = (CWPMessage) arg;
@@ -197,6 +216,9 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
         connectionSwitch.setChecked(control.isConnected());
         if (msg.event == CWPEvent.EChangedFrequency) {
             showToast("Frequency Set: " + msg.param);
+        }
+        if (msg.event == CWPEvent.EConnected){
+            setShouldConnectAuto(true);
         }
     }
 

@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements CWPProvider {
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         cwpModel = new CWPModel();
+        PreferenceManager.setDefaultValues(this, R.xml.pref_connection, false);
         PreferenceManager.setDefaultValues(this, R.xml.pref_cwpserver, false);
         PreferenceManager.setDefaultValues(this, R.xml.pref_signal_alert, false);
     }
