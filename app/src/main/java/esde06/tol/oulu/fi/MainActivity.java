@@ -17,7 +17,6 @@ import android.view.MenuItem;
 import esde06.tol.oulu.fi.cwprotocol.CWPControl;
 import esde06.tol.oulu.fi.cwprotocol.CWPMessaging;
 import esde06.tol.oulu.fi.model.CWPModel;
-import esde06.tol.oulu.fi.CWPProvider;
 
 public class MainActivity extends AppCompatActivity implements CWPProvider {
 
@@ -42,7 +41,8 @@ public class MainActivity extends AppCompatActivity implements CWPProvider {
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         cwpModel = new CWPModel();
-        PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
+        PreferenceManager.setDefaultValues(this, R.xml.pref_cwpserver, false);
+        PreferenceManager.setDefaultValues(this, R.xml.pref_signal_alert, false);
     }
 
     @Override

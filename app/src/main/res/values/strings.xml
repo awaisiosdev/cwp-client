@@ -7,14 +7,23 @@
     <string name="title_activity_settings">Settings</string>
     <string name="change">CHANGE</string>
 
-    <!-- Connection settings -->
-    <string name="pref_header_general">Connection</string>
+    <!-- CWP Server settings -->
+    <string name="pref_header_cwpserver">CWP Server</string>
     <string name="pref_server_address_title">Server Address</string>
     <string name="pref_server_port_title">Server Port</string>
     <string name="pref_connection_frequency_title">Frequency</string>
 
+    <!-- Signal Alert Settings -->
+    <string name="pref_header_alert">Signal Alert</string>
+    <string name="pref_alert_beep_title">Enable Beep</string>
+    <string name="pref_alert_beep_summary">The client generates a beep whenever line is set UP by the user or server.</string>
+    <string name="pref_alert_beep_volume">Beep Volume</string>
+    <string name="pref_alert_beep_volume_summary">Set beep volume between 0 and 100.</string>
+
     <string name="pref_key_server_address">server_address</string>
     <string name="pref_key_connection_frequency">connection_frequency</string>
     <string name="pref_key_server_port">server_port</string>
+    <string name="pref_key_signal_beep_mute">signal_beep_mute</string>
+    <string name="pref_key_signal_beep_volume">signal_beep_volume</string>
 
 </resources>

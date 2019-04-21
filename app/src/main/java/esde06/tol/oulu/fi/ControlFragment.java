@@ -39,6 +39,8 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
     private String serverPortKey;
     private String connectionFrequencyKey;
 
+    private Boolean autoConnect = true;
+
     public ControlFragment() {
     }
 
@@ -71,6 +73,19 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
         frequencyValue.setText(preferences.getString(connectionFrequencyKey, "-1"));
 
         return fragmentLayout;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (control.isConnected()){
+            disconnect();
+        }
     }
 
     @Override
@@ -121,7 +136,9 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
         String frequency = preferences.getString(connectionFrequencyKey, "-1");
 
         Log.d(TAG, "Connect to protocol server request initiated.");
-        Log.d(TAG, "Connecting to " + serverAddress + ":" + serverPort + " at frequency: " + frequency);
+        String message = "Connecting to " + serverAddress + ":" + serverPort + " at frequency: " + frequency;
+        Log.d(TAG, message);
+        showToast(message);
 
         control.connect(serverAddress, Integer.parseInt(serverPort), Integer.parseInt(frequency));
     }
@@ -153,15 +170,11 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
         Log.d(TAG, "Received protocol event : " + msg.event.name());
         if (msg.event == CWPEvent.EConnected || msg.event == CWPEvent.EDisconnected){
             int textId = msg.event == CWPEvent.EConnected ? R.string.Connected : R.string.Disconnected;
-            Toast.makeText(getActivity().getApplicationContext(),
-                    getString(textId),
-                    Toast.LENGTH_SHORT).show();
+            showToast(getString(textId));
         }
         connectionSwitch.setChecked(control.isConnected());
         if (msg.event == CWPEvent.EChangedFrequency) {
-            Toast.makeText(getActivity().getApplicationContext(),
-                    "Frequency Changed",
-                    Toast.LENGTH_SHORT).show();
+            showToast("Frequency changed");
         }
     }
 
@@ -173,5 +186,11 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
                 disconnect();
             }
         }
+    }
+
+    private void showToast(String message){
+        Toast.makeText(getActivity().getApplicationContext(),
+                message,
+                Toast.LENGTH_SHORT).show();
     }
 }

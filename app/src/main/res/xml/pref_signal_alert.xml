@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:key="@string/pref_key_signal_beep_mute"
+        android:title="@string/pref_alert_beep_title"
+        android:summary="@string/pref_alert_beep_summary"
+        android:defaultValue="false"
+        />
+
+    <SeekBarPreference
+        android:key="@string/pref_key_signal_beep_volume"
+        android:title="@string/pref_alert_beep_volume"
+        android:summary="@string/pref_alert_beep_volume_summary"
+        android:max="100"
+        android:defaultValue="50" />
+
+</PreferenceScreen>
