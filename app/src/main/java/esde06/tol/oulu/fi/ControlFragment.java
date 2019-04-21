@@ -121,9 +121,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
                 }
         } else if (v instanceof Button && event.getAction() == MotionEvent.ACTION_DOWN){
             changeFrequency();
-            // Hide the soft keyboard
-            InputMethodManager imm = (InputMethodManager) this.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(frequencyValue.getWindowToken(), 0);
+
         }
         return true;
     }
@@ -168,6 +166,8 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
         SharedPreferences.Editor edit = preferences.edit();
         edit.putString(connectionFrequencyKey,Integer.toString(newFrequency));
         edit.apply();
+
+        hideKeyboard();
     }
 
     private void setupAudioFeedback(){
@@ -178,6 +178,12 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
         }
         int alertVolume = preferences.getInt(beepVolumeKey, 50);
         audioHandle.turnOnAudioFeedback(alertVolume);
+    }
+
+    private void hideKeyboard(){
+        frequencyValue.clearFocus();
+        InputMethodManager imm = (InputMethodManager) this.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(frequencyValue.getWindowToken(), 0);
     }
 
     @Override
@@ -197,15 +203,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Log.d(TAG, "Preference changed - " + key);
-        if (key.equals(serverAddressKey)  || key.equals(serverPortKey)) {
-            if (control.isConnected()){
-                disconnect();
-            }
-        } else if (key.equals(connectionFrequencyKey)){
-            if (control.isConnected()){
-
-            }
-        } else if (key.equals(beepMuteKey) || key.equals(beepVolumeKey)){
+        if (key.equals(beepMuteKey) || key.equals(beepVolumeKey)){
             setupAudioFeedback();
         }
     }

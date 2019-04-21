@@ -68,7 +68,6 @@ public class CWPModel extends Observable implements CWPMessaging, CWPControl, CW
         notifyObservers(new CWPMessage(event, param));
     }
 
-
     public void turnOnAudioFeedback(int alertVolume){
         Log.d(TAG, "Audio Feedback turned On! - Volume : " + alertVolume);
         audioFeedback = new Signaller(alertVolume);
@@ -78,6 +77,7 @@ public class CWPModel extends Observable implements CWPMessaging, CWPControl, CW
     public void turnOffAudioFeedback(){
         Log.d(TAG, "Audio Feedback turned off!");
         if (audioFeedback != null){
+            audioFeedback.forceStop();
             this.deleteObserver(audioFeedback);
             audioFeedback = null;
         }

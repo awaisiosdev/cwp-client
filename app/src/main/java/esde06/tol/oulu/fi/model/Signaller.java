@@ -28,6 +28,10 @@ public class Signaller implements Observer {
         generator.stopTone();
     }
 
+    public void forceStop(){
+        stop();
+    }
+
     @Override
     public void update(Observable o, Object arg) {
        CWPMessage msg = (CWPMessage) arg;
