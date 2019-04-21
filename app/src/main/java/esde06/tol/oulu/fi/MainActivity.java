@@ -46,6 +46,24 @@ public class MainActivity extends AppCompatActivity implements CWPProvider {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        if (cwpModel != null){
+            Log.d(TAG, "Audio Feedback turned On!");
+            cwpModel.turnOnAudioFeedback();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (cwpModel != null){
+            Log.d(TAG, "Audio Feedback turned Off!");
+            cwpModel.turnOffAudioFeedback();
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);

@@ -17,11 +17,6 @@ public class CWPModel extends Observable implements CWPMessaging, CWPControl, CW
     CWProtocolImplementation protocol = new CWProtocolImplementation(this);
     // CWPMessaging Interface Implementation
 
-    public CWPModel(){
-        audioFeedback = new Signaller();
-        this.addObserver(audioFeedback);
-    }
-
     public void lineUp () throws IOException {
         Log.d(TAG, "Pass line Up request");
         protocol.lineUp();
@@ -72,6 +67,16 @@ public class CWPModel extends Observable implements CWPMessaging, CWPControl, CW
         notifyObservers(new CWPMessage(event, param));
     }
 
+
+    public void turnOnAudioFeedback(){
+        audioFeedback = new Signaller();
+        this.addObserver(audioFeedback);
+    }
+
+    public void turnOffAudioFeedback(){
+        this.deleteObserver(audioFeedback);
+        audioFeedback = null;
+    }
 
 
 }

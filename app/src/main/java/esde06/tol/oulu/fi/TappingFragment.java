@@ -104,18 +104,18 @@ public class TappingFragment extends Fragment implements View.OnTouchListener, O
             case ELineDown:
                 lineStatusImage.setImageResource(R.mipmap.down);
                 break;
+            case EChangedFrequency: break;
             case ELineUp:
                 lineStatusImage.setImageResource(R.mipmap.up);
                 break;
             case EConnected:
                 lineStatusImage.setImageResource(R.mipmap.down);
                 break;
+            case EServerStateChange: break;
             case EDisconnected:
+                changeLineState(false, R.id.serverLineState);
+                changeLineState(false, R.id.userLineState);
                 lineStatusImage.setImageResource(R.mipmap.offline);
-                break;
-            case EChangedFrequency:
-                break;
-            case EServerStateChange:
                 break;
         }
         if (event == CWPEvent.ELineDown || event == CWPEvent.ELineUp || event == CWPEvent.EServerStateChange){
