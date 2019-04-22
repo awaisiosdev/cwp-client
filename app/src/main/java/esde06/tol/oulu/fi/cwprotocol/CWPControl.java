@@ -1,5 +1,6 @@
 package esde06.tol.oulu.fi.cwprotocol;
 
+import esde06.tol.oulu.fi.cwprotocol.CWProtocolImplementation.CWPState;
 import java.util.Observer;
 import java.io.IOException;
 
@@ -15,4 +16,5 @@ public interface CWPControl {
     // Frequency management
     public void setFrequency(int frequency);
     public int frequency();
+    public boolean lineIsUp();
 }

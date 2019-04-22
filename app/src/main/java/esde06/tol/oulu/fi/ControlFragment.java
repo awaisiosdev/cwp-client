@@ -157,16 +157,25 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
 
     private void changeFrequency(){
 
+        hideKeyboard();
+        if (!control.isConnected() || control.lineIsUp()){
+            showToast("Frequency change not allowed.");
+            return;
+        }
+
         // Get the new frequency value
         int newFrequency = Integer.valueOf(frequencyValue.getText().toString());
-        control.setFrequency(newFrequency);
+        if (control.frequency() == newFrequency){
+            showToast("New frequency is the same.");
+            return;
+        }
 
+        control.setFrequency(newFrequency);
         // store the new frequency value in the preferences.
         SharedPreferences.Editor edit = preferences.edit();
         edit.putString(connectionFrequencyKey,Integer.toString(newFrequency));
         edit.apply();
 
-        hideKeyboard();
     }
 
     private void setupAudioFeedback(){

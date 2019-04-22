@@ -45,8 +45,8 @@ public class MainActivity extends AppCompatActivity implements CWPProvider {
 
         cwpModel = new CWPModel();
         PreferenceManager.setDefaultValues(this, R.xml.pref_connection, false);
-        PreferenceManager.setDefaultValues(this, R.xml.pref_cwpserver, false);
-        PreferenceManager.setDefaultValues(this, R.xml.pref_signal_alert, false);
+        PreferenceManager.setDefaultValues(this, R.xml.pref_cwpserver, true);
+        PreferenceManager.setDefaultValues(this, R.xml.pref_signal_alert, true);
     }
 
     @Override
