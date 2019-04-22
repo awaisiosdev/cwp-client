@@ -49,7 +49,7 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
 
 
     public CWProtocolImplementation(CWProtocolListener listener){
-          this.listener = listener;
+        this.listener = listener;
     }
 
     public void addObserver(Observer observer) {
@@ -130,6 +130,10 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
     }
 
     public void sendFrequency(){
+        if (currentFrequency == reservedValue){
+            Log.d(TAG, "Incorrect frequency value... This will not work");
+            return;
+        }
         try {
             lock.acquire();
             data32bit = this.currentFrequency;
@@ -164,9 +168,6 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
     public void setFrequency(int frequency) {
         Log.d(TAG, "Set frequency to " + frequency);
         if (currentState == CWPState.LineUp){
-            return;
-        }
-        if (frequency == Math.abs(reservedValue)){
             return;
         }
         currentFrequency = Math.abs(frequency) * -1;
@@ -385,13 +386,13 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
         }
 
         private void sendMessage(short msg) throws IOException {
-           outBuffer = ByteBuffer.allocate(2);
-           outBuffer.order(ByteOrder.BIG_ENDIAN);
-           outBuffer.putShort(msg);
-           outBuffer.position(0);
-           byte[] data = outBuffer.array();
-           nos.write(data);
-           nos.flush();
+            outBuffer = ByteBuffer.allocate(2);
+            outBuffer.order(ByteOrder.BIG_ENDIAN);
+            outBuffer.putShort(msg);
+            outBuffer.position(0);
+            byte[] data = outBuffer.array();
+            nos.write(data);
+            nos.flush();
         }
 
         @Override
