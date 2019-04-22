@@ -57,8 +57,6 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View fragmentLayout = inflater.inflate(R.layout.fragment_control, container, false);
-
-
         setupSharedPreferenes();
 
         connectionSwitch = fragmentLayout.findViewById(R.id.connectionSwitch);
@@ -67,8 +65,6 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
         frequencyValue.setOnEditorActionListener(this);
         changeFrequency = fragmentLayout.findViewById(R.id.changeFrequency);
         changeFrequency.setOnTouchListener(this);
-
-        frequencyValue.setText(preferences.getString(connectionFrequencyKey, "-1"));
         return fragmentLayout;
     }
 
@@ -76,6 +72,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
     public void onStart() {
         super.onStart();
         connectionSwitch.setChecked(control.isConnected());
+        frequencyValue.setText(preferences.getString(connectionFrequencyKey, "1"));
         setupAudioFeedback();
         if (preferences.getBoolean(autoReconnectKey, true) && preferences.getBoolean(shouldConnectAuto, false)){
             connect();
@@ -133,9 +130,9 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
     }
 
     private void connect(){
-        String serverAddress = preferences.getString(serverAddressKey, "0.0.0.0");
+        String serverAddress = preferences.getString(serverAddressKey, "cwp.opimobi.com");
         String serverPort = preferences.getString(serverPortKey, "20000");
-        String frequency = preferences.getString(connectionFrequencyKey, "-1");
+        String frequency = preferences.getString(connectionFrequencyKey, "1");
 
         Log.d(TAG, "Connect to protocol server request initiated.");
         String message = "Connecting to " + serverAddress + ":" + serverPort + " at frequency: " + frequency;

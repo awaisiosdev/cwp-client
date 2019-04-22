@@ -37,6 +37,7 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
     private int serverPort = -1;
     private int currentFrequency = CWPControl.DEFAULT_FREQUENCY;
 
+    private int reservedValue = -2147483648;
     private int messageValue = 0;
     private int data32bit = 0;
     private short data16bit = 0;
@@ -106,7 +107,7 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
         Log.d(TAG, "Connect to CWP Server.");
         this.serverAddress = serverAddr;
         this.serverPort = serverPort;
-        this.currentFrequency = frequency;
+        this.currentFrequency = Math.abs(frequency) * -1;
         reader = new CWPConnectionReader(this);
         reader.startReading();
         Log.d(TAG, "Started Reading incoming messages.");
@@ -165,12 +166,15 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
         if (currentState == CWPState.LineUp){
             return;
         }
-        currentFrequency = frequency;
+        if (frequency == Math.abs(reservedValue)){
+            return;
+        }
+        currentFrequency = Math.abs(frequency) * -1;
         sendFrequency();
     }
 
     public int frequency() {
-        return currentFrequency;
+        return Math.abs(currentFrequency);
     }
 
     @Override
@@ -188,7 +192,7 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
             } else {
                 Log.d(TAG, "Frequency is now changed to " + currentFrequency);
                 Log.d(TAG, "Sending Frequency change event.");
-                listener.onEvent(CWProtocolListener.CWPEvent.EChangedFrequency, receivedData);
+                listener.onEvent(CWProtocolListener.CWPEvent.EChangedFrequency, Math.abs(receivedData));
             }
         }
         switch(currentState){
@@ -235,7 +239,6 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
         private InputStream nis = null; //Network Input Stream
         private int bytesToRead = 4;
         private int bytesRead = 0;
-        private int reservedValue = -2147483648;
 
         CWPConnectionReader(Runnable processor) {
             myProcessor = processor;

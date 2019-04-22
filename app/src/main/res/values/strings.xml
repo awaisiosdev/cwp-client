@@ -35,7 +35,7 @@
     <!-- Default Configuration Values -->
     <string name="pref_default_server_address">cwp.opimobi.com</string>
     <string name="pref_default_server_port">20000</string>
-    <string name="pref_default_connection_frequency">-1</string>
+    <string name="pref_default_connection_frequency">1</string>
     <string name="pref_default_auto_reconnect">true</string>
     <string name="pref_default_beep_mute">false</string>
     <string name="pref_default_beep_volume">50</string>
