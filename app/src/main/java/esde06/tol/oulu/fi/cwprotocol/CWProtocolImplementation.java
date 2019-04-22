@@ -181,7 +181,6 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
         CWPState previousState = currentState;
         currentState = nextState;
         int receivedData = messageValue;
-        lock.release();
 
         if (previousState == CWPState.Connected && currentState == CWPState.LineDown){
             if (receivedData != currentFrequency) {
@@ -254,6 +253,7 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
         void stopReading() throws IOException {
             Log.d(TAG, "Reading Stopped");
             running = false;
+            changeProtocolState(CWPState.Disconnected, 0);
             if (cwpSocket != null){
                 cwpSocket.close();
                 cwpSocket = null;
@@ -266,7 +266,6 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
                 nos.close();
                 nos = null;
             }
-            changeProtocolState(CWPState.Disconnected, 0);
         }
 
         private void doInitialize() throws IOException {
@@ -353,6 +352,7 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
             } catch (InterruptedException e){
                 e.printStackTrace();
             } finally {
+                lock.release();
                 receiveHandler.post(myProcessor);
             }
 
