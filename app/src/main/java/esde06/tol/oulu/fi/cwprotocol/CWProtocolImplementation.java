@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteOrder;
 import java.util.Observer;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 import java.io.OutputStream;
 import java.io.InputStream;
@@ -19,6 +21,7 @@ import esde06.tol.oulu.fi.EventLogger;
 public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runnable {
 
     private static final String TAG = "ProtocolImplementation";
+    private static final String SCANNERTAG = "LineUpScanner";
 
     public enum CWPState {Disconnected, Connected, LineUp, LineDown};
     private volatile CWPState currentState = CWPState.Disconnected;
@@ -49,6 +52,8 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
     private Semaphore lock = new Semaphore(1);
     private ConditionVariable writerHandle = new ConditionVariable();
 
+    private Timer scanner;
+    private TimerTask scannerTask;
 
     public CWProtocolImplementation(CWProtocolListener listener){
         this.listener = listener;
@@ -205,10 +210,12 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
                 connectedStamp = System.currentTimeMillis();
                 Log.d(TAG, "Sending Connected state change event.");
                 listener.onEvent(CWProtocolListener.CWPEvent.EConnected, receivedData);
+                startLineUpScanning();
                 break;
             case Disconnected:
                 Log.d(TAG, "Sending Disconnected state change event.");
                 listener.onEvent(CWProtocolListener.CWPEvent.EDisconnected, receivedData);
+                stopLineUpScanning();
                 break;
             case LineDown:
                 lineUpByServer = false;
@@ -232,6 +239,38 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
                 break;
         }
         EventLogger.logEventEnded("ServerEvent");
+    }
+
+    private void startLineUpScanning() {
+        long scanningTimeInterval = 16;
+        scanner = new Timer();
+        scannerTask = new TimerTask() {
+            @Override
+            public void run() {
+                Log.d(SCANNERTAG, "Scanning....");
+                if (!(lineUpByUser && currentState == CWPState.LineUp)){
+                    return;
+                }
+                Log.d(SCANNERTAG, "Found LineUp State set by user.");
+                if ((System.currentTimeMillis() - lastLineUpStamp) < 30000){
+                    return;
+                }
+                Log.d(SCANNERTAG, "LineUp state time has exceeded 30 seconds, taking action...");
+                try {
+                    lineDown();
+                    lineUp();
+                } catch(IOException e){
+                    e.printStackTrace();
+                }
+            }
+        };
+        scanner.scheduleAtFixedRate(scannerTask, 0, scanningTimeInterval * 1000);
+    }
+
+    private void stopLineUpScanning() {
+        scanner.cancel();
+        scanner = null;
+        scannerTask = null;
     }
 
     private class CWPConnectionReader extends Thread {
