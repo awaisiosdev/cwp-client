@@ -321,21 +321,12 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
             changeProtocolState(CWPState.Connected, 0);
         }
 
-        private int readLoop(byte [] bytes, int bytesToRead) throws IOException {
+        private int readLoop(byte [] bytes) throws IOException {
             int readNow = nis.read(bytes, bytesRead, bytesToRead - bytesRead);
             if (readNow == -1) {
                 throw new IOException("Read -1 from server");
             }
             return readNow;
-        }
-        // Get the buffer value by setting position to 0, and clear it after reading value.
-        private int readValueAndClear(ByteBuffer buffer) {
-            Log.d(TAG, "Bytes read cycle completed.");
-            buffer.position(0);
-            int value = buffer.getInt();
-            Log.d(TAG, "Received Value: " + value);
-            buffer.clear();
-            return value;
         }
 
         // Start new read cycle
@@ -351,22 +342,25 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
                 doInitialize();
                 ByteBuffer buffer = ByteBuffer.allocate(BUFFER_LENGTH);
                 while (running) {
-                    bytesRead = bytesRead + readLoop(buffer.array(), this.bytesToRead);
+                    bytesRead = bytesRead + readLoop(buffer.array());
                     Log.d(TAG, "Bytes Read: " + bytesRead + " , Bytes To Read: " + this.bytesToRead);
                     if(bytesRead != this.bytesToRead){
                         continue;
                     }
+                    Log.d(TAG, "Bytes read cycle completed.");
+                    buffer.position(0);
 
                     if (this.bytesRead == 2){
-                        int value = readValueAndClear(buffer);
+                        short value = buffer.getShort();
+                        Log.d(TAG, "Received value: " + value);
                         Log.d(TAG, "Received Line Down Signal");
                         changeProtocolState(CWPState.LineDown, value);
                         startNewReadCycle(4);
-                        continue;
                     }
 
                     if (this.bytesRead == 4){
-                        int value = readValueAndClear(buffer);
+                        int value = buffer.getInt();
+                         Log.d(TAG, "Received value: " + value);
                         if (value > 0){
                             Log.d(TAG, "Received Line Up Signal");
                             changeProtocolState(CWPState.LineUp, value);
@@ -381,6 +375,8 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
                             startNewReadCycle(4);
                         }
                     }
+
+                    buffer.clear();
                 }
             }  catch (IOException e) {
                 changeProtocolState(CWPState.Disconnected, 0);
