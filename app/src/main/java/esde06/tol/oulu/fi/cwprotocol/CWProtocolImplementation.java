@@ -190,9 +190,21 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
     @Override
     public void run() {
         CWPState previousState = currentState;
-        currentState = nextState;
+        boolean sendStateChange = false;
+        if (lineUpByUser){
+            lineUpByServer = nextState == CWPState.LineUp;
+            sendStateChange = (nextState == CWPState.LineUp || nextState == CWPState.LineDown);
+        } else {
+            currentState = nextState;
+        }
         lock.release();
         int receivedData = messageValue;
+
+        if (sendStateChange){
+            Log.d(TAG, "Sending server state change event");
+            listener.onEvent(CWProtocolListener.CWPEvent.EServerStateChange, receivedData);
+            return;
+        }
 
         if (previousState == CWPState.Connected && currentState == CWPState.LineDown){
             if (receivedData != currentFrequency) {
@@ -219,30 +231,21 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
                 break;
             case LineDown:
                 lineUpByServer = false;
-                if (lineUpByUser) {
-                    Log.d(TAG, "Sending server state change event");
-                    listener.onEvent(CWProtocolListener.CWPEvent.EServerStateChange, receivedData);
-                } else {
-                    Log.d(TAG, "Sending Line Down state change event.");
-                    listener.onEvent(CWProtocolListener.CWPEvent.ELineDown, receivedData);
-                }
+                Log.d(TAG, "Sending Line Down state change event.");
+                listener.onEvent(CWProtocolListener.CWPEvent.ELineDown, receivedData);
                 break;
             case LineUp:
                 lineUpByServer = true;
-                if (lineUpByUser) {
-                    Log.d(TAG, "Sending server state change event");
-                    listener.onEvent(CWProtocolListener.CWPEvent.EServerStateChange, receivedData);
-                } else {
-                    Log.d(TAG, "Sending Line Up state change event.");
-                    listener.onEvent(CWProtocolListener.CWPEvent.ELineUp, receivedData);
-                }
+                Log.d(TAG, "Sending Line Up state change event.");
+                listener.onEvent(CWProtocolListener.CWPEvent.ELineUp, receivedData);
+
                 break;
         }
         EventLogger.logEventEnded("ServerEvent");
     }
 
     private void startLineUpScanning() {
-        long scanningTimeInterval = 16;
+        long scanningTimeInterval = 6;
         scanner = new Timer();
         scannerTask = new TimerTask() {
             @Override
@@ -252,7 +255,7 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
                     return;
                 }
                 Log.d(SCANNERTAG, "Found LineUp State set by user.");
-                if ((System.currentTimeMillis() - lastLineUpStamp) < 30000){
+                if ((System.currentTimeMillis() - lastLineUpStamp) < 12000){
                     return;
                 }
                 Log.d(SCANNERTAG, "LineUp state time has exceeded 30 seconds, taking action...");
@@ -268,7 +271,9 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
     }
 
     private void stopLineUpScanning() {
-        scanner.cancel();
+        if (scanner != null){
+            scanner.cancel();
+        }
         scanner = null;
         scannerTask = null;
     }
