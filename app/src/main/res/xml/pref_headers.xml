@@ -1,19 +1,19 @@
 <preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
     <header
         android:fragment="esde06.tol.oulu.fi.SettingsActivity$ConnectionPreferenceFragment"
-        android:icon="@drawable/ic_info_black_24dp"
+        android:icon="@drawable/ic_connection_settings"
         android:title="@string/pref_header_connection"
         />
 
     <header
         android:fragment="esde06.tol.oulu.fi.SettingsActivity$CWPServerPreferenceFragment"
-        android:icon="@drawable/ic_info_black_24dp"
+        android:icon="@drawable/ic_server_connection_settings"
         android:title="@string/pref_header_cwpserver"
         />
 
     <header
         android:fragment="esde06.tol.oulu.fi.SettingsActivity$SignalAlertPreferenceFragment"
-        android:icon="@drawable/ic_info_black_24dp"
+        android:icon="@drawable/ic_beep_settings"
         android:title="@string/pref_header_alert"
         />
 </preference-headers>
