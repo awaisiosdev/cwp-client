@@ -3,17 +3,20 @@
         android:fragment="esde06.tol.oulu.fi.SettingsActivity$ConnectionPreferenceFragment"
         android:icon="@drawable/ic_connection_settings"
         android:title="@string/pref_header_connection"
+        android:summary="@string/pref_header_summary_connection"
         />
 
     <header
         android:fragment="esde06.tol.oulu.fi.SettingsActivity$CWPServerPreferenceFragment"
         android:icon="@drawable/ic_server_connection_settings"
         android:title="@string/pref_header_cwpserver"
+        android:summary="@string/pref_header_summary_cwpserver"
         />
 
     <header
         android:fragment="esde06.tol.oulu.fi.SettingsActivity$SignalAlertPreferenceFragment"
         android:icon="@drawable/ic_beep_settings"
         android:title="@string/pref_header_alert"
+        android:summary="@string/pref_header_summary_alert"
         />
 </preference-headers>

@@ -9,16 +9,25 @@
 
     <!-- CWP Server settings -->
     <string name="pref_header_cwpserver">CWP Server</string>
+    <string name="pref_header_summary_cwpserver">
+        Set the server address and port.
+    </string>
     <string name="pref_server_address_title">Server Address</string>
     <string name="pref_server_port_title">Server Port</string>
 
     <!-- Connection settings -->
     <string name="pref_header_connection">Connection</string>
+    <string name="pref_header_summary_connection">
+        Set the channel frequency and toggle auto-reconnect feature.
+    </string>
     <string name="pref_connection_frequency_title">Frequency</string>
     <string name="pref_auto_reconnect_title">Auto Reconnect</string>
 
     <!-- Signal Alert Settings -->
     <string name="pref_header_alert">Beep</string>
+    <string name="pref_header_summary_alert">
+        Toggle beep alert and set volume.
+    </string>
     <string name="pref_alert_beep_title">Mute</string>
     <string name="pref_alert_beep_volume">Volume</string>
     <string name="pref_alert_beep_volume_summary">Set volume between 0 and 100.</string>
