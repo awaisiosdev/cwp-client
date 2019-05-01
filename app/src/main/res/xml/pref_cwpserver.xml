@@ -1,6 +1,11 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     >
-
+    <SwitchPreference
+        android:key="@string/pref_key_auto_reconnect"
+        android:title="@string/pref_auto_reconnect_title"
+        android:defaultValue="@string/pref_default_auto_reconnect"
+        />
+    
     <EditTextPreference
         android:defaultValue="@string/pref_default_server_address"
         android:inputType="textUri"
