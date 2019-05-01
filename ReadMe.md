@@ -33,6 +33,7 @@
 
 ## Exercise Work Process 
 
+The app is developed solely by me. When all tasks in the doings were finished and tested, the commit was tagged. In some doings, there were bugs found later so fix is in the later tags. The course work is completed mostly during weekends in 2-3 hours sitting. Some parts of the code were developed while commuting. There were only 2-3 all nighters when things got really interesting in doings 5 & 6. Finally, there were few long hours spent in troubleshooting thread deadlocks. Major development work of the app was finished by the time of mid review deadline. The development was super interesting and it helped me so much in learning Java & Android development.
 
 ## Testing Results
 
