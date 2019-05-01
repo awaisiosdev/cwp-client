@@ -9,6 +9,10 @@
 *	__Phone:__ +358 45 7876 9298
 
 
+## Credits 
+
+
+
 ## Build Instructions
 
 1. Clone the repository on your local machine. You can find the Clone link on bitbucket repository __Source__ page. 
