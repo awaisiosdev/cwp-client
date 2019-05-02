@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "693345928236",
+    "firebase_url": "https://cwpclient-1f6c6.firebaseio.com",
+    "project_id": "cwpclient-1f6c6",
+    "storage_bucket": "cwpclient-1f6c6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:693345928236:android:c810bfe93bb83407",
+        "android_client_info": {
+          "package_name": "esde06.tol.oulu.fi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "693345928236-o4ueqacbbkkqalolbvc6gdul15veac88.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAoExA5wCZ6_yx0pT0QOHAPN5eG6WLbfU4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "693345928236-o4ueqacbbkkqalolbvc6gdul15veac88.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
