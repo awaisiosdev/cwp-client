@@ -14,8 +14,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import java.io.IOException;
-
 import esde06.tol.oulu.fi.cwprotocol.CWPControl;
 import esde06.tol.oulu.fi.cwprotocol.CWPMessaging;
 import esde06.tol.oulu.fi.model.CWPAudio;
