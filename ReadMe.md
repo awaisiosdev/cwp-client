@@ -76,9 +76,13 @@ The app is developed solely by me. When all tasks in the doings were finished an
 
 
 ![Tapping Interface](screenshots/initial/tapping_interface.png)
-![Control Interface](screenshots/initial/control_interface.png)
+![Control Interface](screenshots/initial/control_interface.png)  
+  
+
 ![LineUp State](screenshots/connected/lineUpState.png)
-![LineDown State](screenshots/connected/lineDownState.png)
+![LineDown State](screenshots/connected/lineDownState.png)  
+  
+
 ![Settings](screenshots/settings/settings.png)
 ![Channel Frequency Settings](screenshots/settings/channel_frequency_settings.png)
 ![CWP Server Settings](screenshots/settings/cwp_server_settings.png)
