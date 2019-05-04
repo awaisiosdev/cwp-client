@@ -9,12 +9,17 @@
 *	__Phone:__ +358 45 7876 9298
 
 
+## Third Party SDK(s)
+
+* [Firebase Google](https://firebase.google.com)
+* [Firebase Crashlytics](https://firebase.google.com/docs/crashlytics/)
+
 ## Credits 
 
-* ![App Icon](resources/icons/app_icon.png)  Icon made by [photo3idea-studio ](https://www.flaticon.com/authors/photo3idea-studio) from www.flaticon.com 
-* ![CWP Server](resources/icons/server_settings_icon.png)  Icon made by [smashicons ](https://www.flaticon.com/authors/smashicons) from www.flaticon.com 
+* ![App Icon](resources/icons/app_icon.png)  Icon made by [photo3idea-studio](https://www.flaticon.com/authors/photo3idea-studio) from www.flaticon.com 
+* ![CWP Server](resources/icons/server_settings_icon.png)  Icon made by [smashicons](https://www.flaticon.com/authors/smashicons) from www.flaticon.com 
 * ![Channel Frequency](resources/icons/channel_frequency_settings_icon.png)  Icon made by [Freepik](https://www.freepik.com/) from www.flaticon.com
-* ![Beep](resources/icons/alert_settings_icon.png)  Icon made by [Freepik ](https://www.freepik.com/) from www.flaticon.com 
+* ![Beep](resources/icons/alert_settings_icon.png)  Icon made by [Freepik](https://www.freepik.com/) from www.flaticon.com 
 
 ## Build Instructions
 
