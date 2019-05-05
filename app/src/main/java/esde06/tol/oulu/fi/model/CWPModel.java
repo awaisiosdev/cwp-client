@@ -1,8 +1,6 @@
 package esde06.tol.oulu.fi.model;
 
 import android.util.Log;
-import android.content.Context;
-
 import java.io.IOException;
 import java.util.Observable;
 
@@ -15,24 +13,24 @@ public class CWPModel extends Observable implements CWPMessaging, CWPControl, CW
 
     private final static String TAG = "CWPModel";
     private Signaller audioFeedback;
-    CWProtocolImplementation protocol = new CWProtocolImplementation(this);
-    // CWPMessaging Interface Implementation
+    private CWProtocolImplementation protocol = new CWProtocolImplementation(this);
 
-    public void lineUp () throws IOException {
+    // CWPMessaging Interface Implementation
+    public void lineUp() throws IOException {
         Log.d(TAG, "Pass line Up request");
         protocol.lineUp();
     }
 
-    public void lineDown () throws IOException {
+    public void lineDown() throws IOException {
         Log.d(TAG, "Pass line Down request");
         protocol.lineDown();
     }
 
-    public boolean lineIsUp () {
+    public boolean lineIsUp() {
         return protocol.lineIsUp();
     }
 
-    public boolean serverSetLineUp(){
+    public boolean serverSetLineUp() {
         return protocol.serverSetLineUp();
     }
 
@@ -48,8 +46,8 @@ public class CWPModel extends Observable implements CWPMessaging, CWPControl, CW
         protocol.disconnect();
     }
 
-    public boolean isConnected () {
-         return protocol.isConnected();
+    public boolean isConnected() {
+        return protocol.isConnected();
     }
 
     public void setFrequency(int frequency) {
@@ -68,15 +66,15 @@ public class CWPModel extends Observable implements CWPMessaging, CWPControl, CW
         notifyObservers(new CWPMessage(event, param));
     }
 
-    public void turnOnAudioFeedback(int alertVolume){
+    public void turnOnAudioFeedback(int alertVolume) {
         Log.d(TAG, "Audio Feedback turned On! - Volume : " + alertVolume);
         audioFeedback = new Signaller(alertVolume);
         this.addObserver(audioFeedback);
     }
 
-    public void turnOffAudioFeedback(){
+    public void turnOffAudioFeedback() {
         Log.d(TAG, "Audio Feedback turned off!");
-        if (audioFeedback != null){
+        if (audioFeedback != null) {
             audioFeedback.forceStop();
             this.deleteObserver(audioFeedback);
             audioFeedback = null;

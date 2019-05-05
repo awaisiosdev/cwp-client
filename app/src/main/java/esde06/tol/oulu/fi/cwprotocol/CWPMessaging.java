@@ -4,11 +4,17 @@ import java.util.Observer;
 import java.io.IOException;
 
 public interface CWPMessaging {
-    public void addObserver(Observer observer);
-    public void deleteObserver(Observer observer);
-    public void lineUp() throws IOException;
-    public void lineDown() throws IOException;
-    public boolean isConnected();
-    public boolean lineIsUp();
-    public boolean serverSetLineUp();
+    void addObserver(Observer observer);
+
+    void deleteObserver(Observer observer);
+
+    void lineUp() throws IOException;
+
+    void lineDown() throws IOException;
+
+    boolean isConnected();
+
+    boolean lineIsUp();
+
+    boolean serverSetLineUp();
 }

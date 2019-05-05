@@ -1,4 +1,5 @@
 package esde06.tol.oulu.fi;
+
 import android.util.Log;
 
 public class EventLogger {
@@ -14,7 +15,7 @@ public class EventLogger {
     public static void logEventEnded(String event) {
         if (eventStarted > 0) {
             long duration = System.currentTimeMillis() - eventStarted;
-            Log.d(TAG, event + " duration: " +  duration);
+            Log.d(TAG, event + " duration: " + duration);
         }
     }
 

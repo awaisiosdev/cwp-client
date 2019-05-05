@@ -6,6 +6,8 @@ import esde06.tol.oulu.fi.model.CWPAudio;
 
 public interface CWPProvider {
     CWPMessaging getMessaging();
+
     CWPControl getControl();
+
     CWPAudio getAudio();
 }

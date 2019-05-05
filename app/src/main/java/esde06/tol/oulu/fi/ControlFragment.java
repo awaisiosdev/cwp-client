@@ -92,10 +92,12 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
     public void onAttach(Context context) {
         super.onAttach(context);
         CWPProvider provider = (CWPProvider) getActivity();
-        audioHandle = provider.getAudio();
-        control = provider.getControl();
-        control.addObserver(this);
-        Log.d(TAG, "Started observing protocol events.");
+        if (provider != null){
+            audioHandle = provider.getAudio();
+            control = provider.getControl();
+            control.addObserver(this);
+            Log.d(TAG, "Started observing protocol events.");
+        }
     }
 
     @Override
@@ -112,6 +114,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
                 if (!control.isConnected()){
                     connect();
                 } else {
+                    setShouldConnectAuto(false);
                     disconnect();
                 }
         } else if (v instanceof Button && event.getAction() == MotionEvent.ACTION_DOWN){

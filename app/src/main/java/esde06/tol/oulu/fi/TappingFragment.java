@@ -14,6 +14,7 @@ import android.widget.TextView;
 import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
+
 import esde06.tol.oulu.fi.cwprotocol.CWPMessaging;
 import esde06.tol.oulu.fi.cwprotocol.CWProtocolListener.CWPEvent;
 import esde06.tol.oulu.fi.model.CWPMessage;
@@ -48,9 +49,11 @@ public class TappingFragment extends Fragment implements View.OnTouchListener, O
     public void onAttach(Context context) {
         super.onAttach(context);
         CWPProvider provider = (CWPProvider) getActivity();
-        messaging = provider.getMessaging();
-        messaging.addObserver(this);
-        Log.d(TAG, "Started observing protocol events." );
+        if (provider != null) {
+            messaging = provider.getMessaging();
+            messaging.addObserver(this);
+        }
+        Log.d(TAG, "Started observing protocol events.");
     }
 
     @Override
@@ -64,61 +67,65 @@ public class TappingFragment extends Fragment implements View.OnTouchListener, O
     @Override
     public boolean onTouch(View v, MotionEvent event) {
 
-        if (messaging.isConnected() == false){
+        if (!messaging.isConnected()) {
             return false;
         }
 
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-             try {
-                 Log.d(TAG, "Line Up signal send by user.");
-                 messaging.lineUp();
-                 changeLineState(true, R.id.userLineState);
-             } catch (IOException e) {
-
-             }
-             return true;
-        } else if (event.getAction() == MotionEvent.ACTION_CANCEL || event.getAction() == MotionEvent.ACTION_UP ) {
+            try {
+                Log.d(TAG, "Line Up signal send by user.");
+                messaging.lineUp();
+                changeLineState(true, R.id.userLineState);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return true;
+        } else if (event.getAction() == MotionEvent.ACTION_CANCEL || event.getAction() == MotionEvent.ACTION_UP) {
             try {
                 Log.d(TAG, "Line Down signal send by user.");
                 messaging.lineDown();
                 changeLineState(false, R.id.userLineState);
             } catch (IOException e) {
-
+                e.printStackTrace();
             }
             return true;
         }
         return false;
     }
 
-    private void changeLineState(boolean isLineUp, Integer id){
-        TextView lineState = this.getView().findViewById(id);
-        if (isLineUp) {
-           lineState.setText("●");
-        } else {
-            lineState.setText("○");
+    private void changeLineState(boolean isLineUp, Integer id) {
+        if (this.getView() != null) {
+            TextView lineState = this.getView().findViewById(id);
+            if (isLineUp) {
+                lineState.setText("●");
+            } else {
+                lineState.setText("○");
+            }
         }
     }
 
     private void changeLineStatus(CWPEvent event) {
-        switch(event){
+        switch (event) {
             case ELineDown:
                 lineStatusImage.setImageResource(R.mipmap.down);
                 break;
-            case EChangedFrequency: break;
+            case EChangedFrequency:
+                break;
             case ELineUp:
                 lineStatusImage.setImageResource(R.mipmap.up);
                 break;
             case EConnected:
                 lineStatusImage.setImageResource(R.mipmap.down);
                 break;
-            case EServerStateChange: break;
+            case EServerStateChange:
+                break;
             case EDisconnected:
                 changeLineState(false, R.id.serverLineState);
                 changeLineState(false, R.id.userLineState);
                 lineStatusImage.setImageResource(R.mipmap.offline);
                 break;
         }
-        if (event == CWPEvent.ELineDown || event == CWPEvent.ELineUp || event == CWPEvent.EServerStateChange){
+        if (event == CWPEvent.ELineDown || event == CWPEvent.ELineUp || event == CWPEvent.EServerStateChange) {
             changeLineState(messaging.serverSetLineUp(), R.id.serverLineState);
         }
     }
