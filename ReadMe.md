@@ -21,6 +21,13 @@
 * ![Channel Frequency](resources/icons/channel_frequency_settings_icon.png)  Icon made by [Freepik](https://www.freepik.com/) from www.flaticon.com
 * ![Beep](resources/icons/alert_settings_icon.png)  Icon made by [Freepik](https://www.freepik.com/) from www.flaticon.com 
 
+## API Level 
+
+1. Target SDK API Level is 28. (Android 9)
+2. Minimum Target SDK API Level is 19. (Kitkat)
+
+__Crashlytics SDK is integrated in the app to investigate weird issues if happen on other API versions. I ran the client on Android 9 and 7.1__
+
 ## Build Instructions
 
 1. Clone the repository on your local machine. You can find the Clone link on bitbucket repository __Source__ page. 

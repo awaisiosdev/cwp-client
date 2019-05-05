@@ -413,9 +413,6 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } finally {
-                if (nextState != CWPState.Connected) {
-                    lock.release();
-                }
                 receiveHandler.post(myProcessor);
             }
 
