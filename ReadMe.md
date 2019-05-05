@@ -90,5 +90,5 @@ The app is developed solely by me. When all tasks in the doings were finished an
 
 
 
-
+Copyright (c) 2019-2020, Awais Aslam.
 
