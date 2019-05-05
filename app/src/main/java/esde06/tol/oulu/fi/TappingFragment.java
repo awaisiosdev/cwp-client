@@ -39,7 +39,7 @@ public class TappingFragment extends Fragment implements View.OnTouchListener, O
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View fragmentView = inflater.inflate(R.layout.fragment_tapping, container, false);
-        lineStatusImage = (ImageView) fragmentView.findViewById(R.id.lineStatusIcon);
+        lineStatusImage = fragmentView.findViewById(R.id.lineStatusIcon);
         lineStatusImage.setOnTouchListener(this);
         return fragmentView;
     }

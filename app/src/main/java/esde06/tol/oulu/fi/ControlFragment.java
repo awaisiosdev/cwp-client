@@ -3,6 +3,7 @@ package esde06.tol.oulu.fi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
@@ -151,7 +152,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
             Log.d(TAG, "Disconnect to protocol server request initiated.");
             control.disconnect();
         } catch (IOException e){
-
+            e.printStackTrace();
         }
     }
 
@@ -190,8 +191,11 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
 
     private void hideKeyboard(){
         frequencyValue.clearFocus();
-        InputMethodManager imm = (InputMethodManager) this.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(frequencyValue.getWindowToken(), 0);
+        Context context = this.getContext();
+        if (context != null){
+            InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(frequencyValue.getWindowToken(), 0);
+        }
     }
 
     private void setupSharedPreferenes(){
@@ -240,8 +244,11 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
     }
 
     private void showToast(String message){
-        Toast.makeText(getActivity().getApplicationContext(),
-                message,
-                Toast.LENGTH_SHORT).show();
+        FragmentActivity activity = getActivity();
+        if (activity != null){
+            Toast.makeText(activity.getApplicationContext(),
+                    message,
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 }
