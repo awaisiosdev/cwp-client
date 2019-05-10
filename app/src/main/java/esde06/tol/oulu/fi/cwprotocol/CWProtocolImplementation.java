@@ -84,7 +84,7 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
             writerHandle.open();
         }
         startMonitoringLineUpMessage();
-        Log.d(TAG, "Line Up message : " + data32bit);
+        Log.d(TAG, "Line Up message : " + message);
         if (lineUpByServer) {
             return;
         }
@@ -109,7 +109,7 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
             writerHandle.open();
         }
         stopMonitoringLineUpMessage();
-        Log.d(TAG, "Line Down message : " + data16bit);
+        Log.d(TAG, "Line Down message : " + message);
         if (lineUpByServer) {
             return;
         }
@@ -238,7 +238,6 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
                 lineUpByServer = true;
                 Log.d(TAG, "Sending Line Up state change event.");
                 listener.onEvent(CWProtocolListener.CWPEvent.ELineUp, receivedData);
-
                 break;
         }
         EventLogger.logEventEnded("ServerEvent");
@@ -246,10 +245,11 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
 
     private void handleLongLineUpMessage() {
         Log.d(MONITORTAG, "Sending LineDown Signal");
+        short lineDownMessage =  (short) (System.currentTimeMillis() - lastLineUpStamp);
+        Log.d(MONITORTAG, "Line Down message: " + lineDownMessage);
         try {
             lock.acquire();
-            data16bit = (short) (System.currentTimeMillis() - lastLineUpStamp);
-            ;
+            data16bit = lineDownMessage;
             writerHandle.open();
             lock.release();
         } catch (InterruptedException e) {
@@ -257,9 +257,11 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
         }
         Log.d(MONITORTAG, "Sending LineUp Signal");
         lastLineUpStamp = System.currentTimeMillis();
+        int lineUpMessage = (int)(lastLineUpStamp - connectedStamp);
+        Log.d(MONITORTAG, "Line Up message: " + lineUpMessage);
         try {
             lock.acquire();
-            data32bit = (int) (lastLineUpStamp - connectedStamp);
+            data32bit = lineUpMessage;
             writerHandle.open();
             lock.release();
         } catch (InterruptedException e) {
@@ -277,13 +279,16 @@ public class CWProtocolImplementation implements CWPControl, CWPMessaging, Runna
                     return;
                 }
                 Log.d(MONITORTAG, "Found Lineup signal sending by user.");
+                // if the lineUP message exceeds 30 seconds
                 if ((System.currentTimeMillis() - lastLineUpStamp) < 30000) {
                     return;
                 }
                 Log.d(MONITORTAG, "LineUp signal is up for more than 30 seconds, handling it now..");
+                // handle long line up message, send lineDown followed by LineUP event.
                 handleLongLineUpMessage();
             }
         };
+        // ckeck every 16 seconds
         monitor.scheduleAtFixedRate(monitorTask, 0, 16000);
     }
 
