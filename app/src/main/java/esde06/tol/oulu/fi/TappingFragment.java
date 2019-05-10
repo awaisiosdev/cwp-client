@@ -72,22 +72,14 @@ public class TappingFragment extends Fragment implements View.OnTouchListener, O
         }
 
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            try {
-                Log.d(TAG, "Line Up signal send by user.");
-                messaging.lineUp();
-                changeLineState(true, R.id.userLineState);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            Log.d(TAG, "Line Up signal send by user.");
+            messaging.lineUp();
+            changeLineState(true, R.id.userLineState);
             return true;
         } else if (event.getAction() == MotionEvent.ACTION_CANCEL || event.getAction() == MotionEvent.ACTION_UP) {
-            try {
-                Log.d(TAG, "Line Down signal send by user.");
-                messaging.lineDown();
-                changeLineState(false, R.id.userLineState);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            Log.d(TAG, "Line Down signal send by user.");
+            messaging.lineDown();
+            changeLineState(false, R.id.userLineState);
             return true;
         }
         return false;

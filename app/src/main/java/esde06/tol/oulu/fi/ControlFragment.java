@@ -3,6 +3,7 @@ package esde06.tol.oulu.fi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.EditorInfo;
@@ -180,9 +181,9 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
     }
 
     private void setupAudioFeedback(){
+        audioHandle.turnOffAudioFeedback();
         Boolean isAudioMuted = preferences.getBoolean(beepMuteKey, true);
         if (isAudioMuted){
-            audioHandle.turnOffAudioFeedback();
             return;
         }
         int alertVolume = preferences.getInt(beepVolumeKey, 50);
@@ -246,9 +247,15 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, T
     private void showToast(String message){
         FragmentActivity activity = getActivity();
         if (activity != null){
-            Toast.makeText(activity.getApplicationContext(),
-                    message,
-                    Toast.LENGTH_SHORT).show();
+            final Toast toast = Toast.makeText(activity.getApplicationContext(), message, Toast.LENGTH_SHORT);
+            toast.show();
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    toast.cancel();
+                }
+            }, 750);
         }
     }
 }

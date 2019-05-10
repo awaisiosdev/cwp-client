@@ -8,9 +8,9 @@ public interface CWPMessaging {
 
     void deleteObserver(Observer observer);
 
-    void lineUp() throws IOException;
+    void lineUp();
 
-    void lineDown() throws IOException;
+    void lineDown();
 
     boolean isConnected();
 

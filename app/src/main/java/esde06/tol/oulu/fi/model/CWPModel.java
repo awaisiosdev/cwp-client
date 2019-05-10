@@ -16,12 +16,12 @@ public class CWPModel extends Observable implements CWPMessaging, CWPControl, CW
     private CWProtocolImplementation protocol = new CWProtocolImplementation(this);
 
     // CWPMessaging Interface Implementation
-    public void lineUp() throws IOException {
+    public void lineUp() {
         Log.d(TAG, "Pass line Up request");
         protocol.lineUp();
     }
 
-    public void lineDown() throws IOException {
+    public void lineDown() {
         Log.d(TAG, "Pass line Down request");
         protocol.lineDown();
     }
