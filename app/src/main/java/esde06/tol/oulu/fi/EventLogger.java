@@ -39,6 +39,7 @@ public class EventLogger {
             history.add(duration);
         }
         eventHistory.put(event, history);
+        logProtocolEventsCount();
     }
 
     public static void getLoggingSummary(){
@@ -46,6 +47,20 @@ public class EventLogger {
         computeStatistics(serverEvent);
         computeStatistics(lineUp);
         computeStatistics(lineDown);
+    }
+
+    private static void logProtocolEventsCount(){
+        int eventsCount = 0;
+        if (eventHistory.get(serverEvent) != null){
+            eventsCount += eventHistory.get(serverEvent).size();
+        }
+        if (eventHistory.get(lineUp) != null){
+            eventsCount += eventHistory.get(lineUp).size();
+        }
+        if (eventHistory.get(lineDown) != null){
+            eventsCount += eventHistory.get(lineDown).size();
+        }
+        Log.d(TAG, "Events sent and received count: " + eventsCount);
     }
 
     private static void computeStatistics(String event){
