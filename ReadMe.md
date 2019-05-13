@@ -23,10 +23,10 @@
 
 ## API Level 
 
-1. Target SDK API Level is 28. (Android 9)
+1. Target SDK API Level is 28. (Pie)
 2. Minimum Target SDK API Level is 19. (Kitkat)
 
-__Crashlytics SDK is integrated in the app to investigate weird issues if happen on other API versions. I ran the client on Android 9 and 7.1__
+__Crashlytics SDK is integrated in the app to investigate weird issues if happen on other API versions. I ran the client without any issue on Android 9, 8.0 and 7.1__
 
 ## Build Instructions
 
@@ -118,6 +118,11 @@ I ran the client on LG6 android phone for profiling the app. Phone was running A
 ### Few Observations
 1. I noticed the lagging of toast messages, they seem to take a while to disappear as compared to Huawei Honor 7 running on Android 7.1 (API Level 25)
 
+
+### If I had Time
+
+1. I would have worked on fixing deadlock issue caused by multiple taps.
+2. I would have implemented morse code translator. (Maybe in future, I will extend this app.)
 
 ## Screenshots 
 
