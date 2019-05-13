@@ -82,7 +82,7 @@ The app is developed solely by me. When all tasks in the doings were finished an
 
 I ran the client on LG6 android phone for profiling the app. Phone was running Android 8.0 (API Level 26). The app was run 3 times for 3 minutes in profiling sessions. Below are the results from profiling. 
 
-1. First item is to measure reception time from socket to play sound. During profiling,LineUp/LineDown messages transmission time were also recorded. 
+1. First item is to measure reception time from socket to play sound. During profiling,LineUp/LineDown messages transmission time were also recorded. Minimun, maximum and average for total messages is shown in below table. 
 
 	* __First Run__
 
@@ -107,6 +107,9 @@ I ran the client on LG6 android phone for profiling the app. Phone was running A
 		| Server Event |     7     |   155   |   21    |   55  |
 		| Line Up      |     1     |    7    |   2     |   53  |
 		| Line Down    |     0     |    4    |   2     |   53  |
+
+
+	__NB Time is recorded in milliseconds__ 
 
 2. Memory comsumption was between 111.5 MB - 112.0 MB during sending and receiving different type of signals. 
 
