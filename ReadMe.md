@@ -78,6 +78,43 @@ The app is developed solely by me. When all tasks in the doings were finished an
 
 ## Testing Results
 
+### Profiling 
+
+I ran the client on LG6 android phone for profiling the app. Phone was running Android 8.0 (API Level 26). The app was run 3 times for 3 minutes in profiling sessions. Below are the results from profiling. 
+
+1. First item is to measure reception time from socket to play sound. During profiling,LineUp/LineDown messages transmission time were also recorded. 
+
+	* __First Run__
+
+		| Message      |  Minimum  | Maximum | Average | Total |
+		| -------------|-----------|---------|---------|-------|
+		| Server Event |     3     |   129   |   23    |   78  |
+		| Line Up      |     0     |    6    |   2     |   52  |
+		| Line Down    |     0     |    4    |   2     |   52  |
+
+	* __Second Run__
+
+		| Message      |  Minimum  | Maximum | Average | Total |
+		| -------------|-----------|---------|---------|-------|
+		| Server Event |     5     |   135   |   21    |   66  |
+		| Line Up      |     1     |    3    |   2     |   57  |
+		| Line Down    |     0     |    3    |   2     |   57  |
+
+	* __Third Run__
+
+		| Message      |  Minimum  | Maximum | Average | Total |
+		| -------------|-----------|---------|---------|-------|
+		| Server Event |     7     |   155   |   21    |   55  |
+		| Line Up      |     1     |    7    |   2     |   53  |
+		| Line Down    |     0     |    4    |   2     |   53  |
+
+2. Memory comsumption was between 111.5 MB - 112.0 MB during sending and receiving different type of signals. 
+
+
+
+### Few Observations
+1. I noticed the lagging of toast messages, they seem to take a while to disappear as compared to Huawei Honor 7 running on Android 7.1 (API Level 25)
+
 
 ## Screenshots 
 
